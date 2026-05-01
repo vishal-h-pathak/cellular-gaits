@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+
+# Virtual env
+.venv/
+.python-version
+
+# uv
+uv.lock
+
+# Project artifacts
+checkpoints/
+outputs/
+
+# OS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
