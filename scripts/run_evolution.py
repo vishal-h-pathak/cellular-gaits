@@ -37,6 +37,13 @@ def main() -> None:
     p.add_argument("--rollout-steps", type=int, default=DEFAULT_N_STEPS)
     p.add_argument("--checkpoint-every", type=int, default=5)
     p.add_argument("--run-id", type=str, default=None)
+    p.add_argument(
+        "--resume-from",
+        type=Path,
+        default=None,
+        help="Path to gen_NN.npz checkpoint to resume from. Pickled .pkl sibling, if "
+        "present, enables exact resume; otherwise warm-start with --sigma at best_params.",
+    )
     args = p.parse_args()
 
     cfg = EvolveConfig(
@@ -48,7 +55,9 @@ def main() -> None:
         checkpoint_every=args.checkpoint_every,
     )
 
-    best_fit, best_params, run_dir = run_evolution(cfg, run_id=args.run_id)
+    best_fit, best_params, run_dir = run_evolution(
+        cfg, run_id=args.run_id, resume_from=args.resume_from
+    )
     print(
         f"\n[evolve] DONE  best_fit={best_fit:.4f}  "
         f"params_norm={float((best_params**2).sum() ** 0.5):.4f}  "

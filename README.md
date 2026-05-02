@@ -8,14 +8,14 @@ Next.js portfolio.
 
 ## Status
 
-All seven build steps implemented end-to-end:
+All seven build steps complete:
 
 1. ✅ Smoke test (`scripts/smoke_test.py`) — Flygym install + offscreen render
 2. ✅ NCA module (`src/cellular_gaits/nca.py`) — 660-param 2-layer conv MLP
 3. ✅ Env wrapper (`src/cellular_gaits/env.py`) — reset/step/rollout, 42 actuators
 4. ✅ NCA ↔ Env integration (`scripts/test_nca_env.py`)
 5. ✅ Evolution loop (`src/cellular_gaits/evolve.py`) — CMA-ES, checkpoints, CSV
-6. ⏳ Full run (pop=32, gens=50) — runs in ~35 min on M5 CPU
+6. ✅ Full run (pop=32, gens=50) — `best_fit=86.62` (forward_dx=86.6mm in 3s)
 7. ✅ Renderer (`src/cellular_gaits/render.py`) — mp4 + stable CA-state JSON
 
 After the full run completes, render with
@@ -104,6 +104,36 @@ These resolve ambiguities in the original spec.
   the env clips/rescales to (-3.14, 3.14) rad before
   `set_actuator_inputs`.
 
+## Resume notes
+
+The v1 run (`run_id=2026-05-02T00-01-51Z`) was interrupted by an OS
+restart after generation 38 (1-indexed). The last on-disk checkpoint
+was `gen_35.npz`, so generations 36–38 of CMA state were lost.
+
+Because the original checkpointer only saved numpy arrays (not the
+pickled `cma.CMAEvolutionStrategy`), the resume is **approximate, not
+exact**: a fresh ES was warm-started at the saved `best_params` mean
+with a smaller `sigma_init=0.1` (the population is already in a decent
+region of parameter space). Generation numbering continued from 36
+through 50 in the same `fitness_log_<run_id>.csv` and checkpoint
+directory; rows in the CSV carry a `phase` column (`original` vs
+`resumed`) so the discontinuity is visible if it shows up in the
+curves. All checkpoints written from gen 40 onward also pickle the
+full ES (`gen_NN.pkl`), so any future interruption is recoverable
+exactly.
+
+Empirically the resumed segment recovered and improved on the
+pre-crash best (62.14 → 86.62 by gen 38 of the resumed phase), so the
+warm-start did not lose the gait the original run had discovered.
+
+To resume any future run:
+
+```sh
+uv run python scripts/run_evolution.py \
+  --pop 32 --gens 50 --sigma 0.1 --seed 0 \
+  --resume-from checkpoints/<run_id>/gen_NN.npz
+```
+
 ## Repository layout
 
 ```
@@ -127,11 +157,11 @@ cellular-gaits/
 │   ├── test_nca_env.py     # NCA <-> env integration
 │   ├── run_evolution.py
 │   └── render_best.py
-├── checkpoints/<run_id>/   # gitignored — gen_NN.npz per checkpoint
+├── checkpoints/<run_id>/   # gitignored — gen_NN.npz + gen_NN.pkl per checkpoint
 └── outputs/                # gitignored
     ├── videos/             # mp4
     ├── ca_states_<name>.json
-    └── fitness_log_<run_id>.csv
+    └── fitness_log_<run_id>.csv  # cols: gen,best,mean,std,time_s,phase
 ```
 
 ## Output schema (stable)
