@@ -8,8 +8,20 @@ Next.js portfolio.
 
 ## Status
 
-Work in progress. See `outputs/videos/` for the latest rendered gait and
-`outputs/ca_states_best.json` for the CA state log of that rollout.
+All seven build steps implemented end-to-end:
+
+1. ✅ Smoke test (`scripts/smoke_test.py`) — Flygym install + offscreen render
+2. ✅ NCA module (`src/cellular_gaits/nca.py`) — 660-param 2-layer conv MLP
+3. ✅ Env wrapper (`src/cellular_gaits/env.py`) — reset/step/rollout, 42 actuators
+4. ✅ NCA ↔ Env integration (`scripts/test_nca_env.py`)
+5. ✅ Evolution loop (`src/cellular_gaits/evolve.py`) — CMA-ES, checkpoints, CSV
+6. ⏳ Full run (pop=32, gens=50) — runs in ~35 min on M5 CPU
+7. ✅ Renderer (`src/cellular_gaits/render.py`) — mp4 + stable CA-state JSON
+
+After the full run completes, render with
+`uv run python scripts/render_best.py` — output lands in
+`outputs/videos/best.mp4` and `outputs/ca_states_best.json` (the React
+widget consumes the latter).
 
 ## Setup
 
@@ -28,14 +40,24 @@ CPU-only. No GPU / Warp dependencies are installed.
 # 1. Sanity-check Flygym install + render pipeline (writes outputs/videos/smoke.mp4)
 uv run python scripts/smoke_test.py
 
-# 5. Tiny end-to-end CMA-ES test
+# 2. NCA module unit tests (no Flygym, no CMA-ES)
+uv run python scripts/test_nca.py
+
+# 3. Env wrapper smoke test (zeros + sinusoid dummy controllers)
+uv run python scripts/test_env.py
+
+# 4. Wire NCA into env, single rollout with random params
+uv run python scripts/test_nca_env.py
+
+# 5. Tiny end-to-end CMA-ES test (~1 minute)
 uv run python scripts/run_evolution.py --pop 8 --gens 5
 
-# 6. Full evolution
+# 6. Full evolution (~35 minutes on M5 CPU)
 uv run python scripts/run_evolution.py --pop 32 --gens 50
 
 # 7. Render the best individual from the latest checkpoint
-uv run python scripts/render_best.py
+uv run python scripts/render_best.py             # writes outputs/videos/best.mp4
+uv run python scripts/render_best.py --name g50  # custom name
 ```
 
 ## Decisions & assumptions
@@ -63,10 +85,24 @@ These resolve ambiguities in the original spec.
   for offscreen rendering via `mujoco.Renderer`; we never invoke
   `mjpython` (only needed for the interactive viewer), so the
   `link_libpython_dylib_macos.sh` workaround is not required.
-- **Fitness formula.** `forward_x_displacement(thorax) − α · (count of timesteps where thorax z drops below z_threshold)`
-  with `α = 0.05` per timestep below threshold and `z_threshold = 0.3` mm
-  (~half the neutral spawn height). Documented in `env.py`.
-- **Rollout length.** 3 simulated seconds at the default control rate.
+- **Fitness formula.** `forward_x_displacement(thorax) − α · (# control steps where thorax z < z_threshold)`
+  with `α = 0.05` per below-threshold step. `z_threshold` is set
+  *adaptively* to half the post-warmup standing thorax z (rather than a
+  hard-coded 0.3, which mismatched Flygym's actual units in this build —
+  empirical standing z ≈ 1.08, so the threshold is ≈ 0.54). Documented
+  in `env.py`. The first reading is taken AFTER `Simulation.warmup()` so
+  the gravity-settling phase is excluded from the displacement signal.
+- **Rollout length.** 3 simulated seconds at 250 Hz control rate (40
+  physics ticks per control step → 750 control steps per rollout).
+- **NCA architecture.** 8×8 grid, 4 channels, single shared 2-layer MLP
+  implemented as a 3×3 zero-padded conv (Conv2d 4→16) followed by a 1×1
+  conv (16→4). tanh between layers, output clamped to [-1, 1]. **660
+  parameters total** (well under the 1000 cap). Random init draws
+  state ∼ U(-0.1, 0.1).
+- **NCA → joint mapping.** Channel 0 of the 7×6 motor sub-grid (rows
+  0-6, cols 0-5; 42 cells, row-major) is read as targets in [-1, 1] and
+  the env clips/rescales to (-3.14, 3.14) rad before
+  `set_actuator_inputs`.
 
 ## Repository layout
 
@@ -86,10 +122,16 @@ cellular-gaits/
 │       └── state_log.py
 ├── scripts/
 │   ├── smoke_test.py
+│   ├── test_nca.py         # standalone NCA unit tests
+│   ├── test_env.py         # env wrapper smoke test
+│   ├── test_nca_env.py     # NCA <-> env integration
 │   ├── run_evolution.py
 │   └── render_best.py
-├── checkpoints/        # gitignored
-└── outputs/videos/     # gitignored
+├── checkpoints/<run_id>/   # gitignored — gen_NN.npz per checkpoint
+└── outputs/                # gitignored
+    ├── videos/             # mp4
+    ├── ca_states_<name>.json
+    └── fitness_log_<run_id>.csv
 ```
 
 ## Output schema (stable)
