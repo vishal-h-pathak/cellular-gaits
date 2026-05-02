@@ -141,6 +141,8 @@ class FlyEnv:
         self.sim.set_actuator_inputs(FLY_NAME, ActuatorType.POSITION, ctrl)
         for _ in range(PHYSICS_PER_CONTROL):
             self.sim.step()
+            if self.sim.renderer is not None:
+                self.sim.render_as_needed()
         thorax = self._thorax_xyz()
         prev = self._prev_thorax_xyz if self._prev_thorax_xyz is not None else thorax
         reward = StepReward(
