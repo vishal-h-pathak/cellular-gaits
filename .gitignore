@@ -22,3 +22,10 @@ outputs/
 # IDE
 .idea/
 .vscode/
+
+# Browser-test scratch
+.playwright-mcp/
+
+# Portfolio QA screenshots (do not belong in this repo)
+cg-desktop*.png
+cg-mobile*.png
