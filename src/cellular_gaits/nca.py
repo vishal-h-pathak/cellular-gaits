@@ -39,9 +39,14 @@ STATE_SHAPE = (1, CHANNELS, GRID_H, GRID_W)
 
 
 class NCA(nn.Module):
-    def __init__(self, hidden: int = HIDDEN_DEFAULT) -> None:
+    def __init__(self, hidden: int = HIDDEN_DEFAULT, gain: float = 1.0) -> None:
         super().__init__()
         self.hidden = hidden
+        # Criticality knob: scales the pre-activation fed to tanh. gain=1.0 is
+        # the trained operating point (identity); <1 drives the CA toward the
+        # ordered/linear regime, >1 toward saturation/chaos. NOT a learned
+        # parameter — it is held fixed during a rollout and swept externally.
+        self.gain = float(gain)
         self.conv1 = nn.Conv2d(
             CHANNELS, hidden, kernel_size=3, padding=1, padding_mode="zeros"
         )
@@ -59,7 +64,7 @@ class NCA(nn.Module):
             raise ValueError(
                 f"NCA.step expected state of shape {STATE_SHAPE}, got {tuple(state.shape)}"
             )
-        h = torch.tanh(self.conv1(state))
+        h = torch.tanh(self.gain * self.conv1(state))
         out = self.conv2(h)
         return torch.clamp(out, -1.0, 1.0)
 

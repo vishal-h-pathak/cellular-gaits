@@ -93,6 +93,44 @@ def test_two_ncas_with_same_params_match() -> None:
     assert torch.allclose(a.step(s), b.step(s), atol=1e-7)
 
 
+def test_gain_default_is_identity() -> None:
+    """gain=1.0 must reproduce the pre-gain rule bit-for-bit.
+
+    The pre-gain rule was ``tanh(conv1(s))``; with the knob it is
+    ``tanh(gain * conv1(s))``. At gain=1.0 the multiply is exact, so a
+    multi-tick autonomous rollout must match the reference rule exactly.
+    """
+    nca = NCA(gain=1.0)
+    rng = np.random.default_rng(7)
+    nca.set_params(rng.normal(0, 0.5, size=nca.n_params))
+    assert nca.gain == 1.0
+
+    state = NCA.init_state(seed=0)
+    ref = state.clone()
+    for _ in range(50):
+        state = nca.step(state)
+        # reference = the old formula, no gain term at all
+        ref = torch.clamp(nca.conv2(torch.tanh(nca.conv1(ref))), -1.0, 1.0)
+        assert torch.equal(state, ref), "gain=1.0 diverged from pre-gain rule"
+
+
+def test_gain_changes_dynamics() -> None:
+    """A gain other than 1.0 must actually move the trajectory."""
+    rng = np.random.default_rng(7)
+    params = rng.normal(0, 0.5, size=NCA().n_params)
+    s0 = NCA.init_state(seed=0)
+
+    native = NCA(gain=1.0)
+    native.set_params(params)
+    hot = NCA(gain=3.0)
+    hot.set_params(params)
+
+    a, b = s0.clone(), s0.clone()
+    for _ in range(20):
+        a, b = native.step(a), hot.step(b)
+    assert not torch.allclose(a, b, atol=1e-4), "gain=3.0 had no effect"
+
+
 def main() -> None:
     n = test_param_count()
     test_init_state_shape_and_determinism()
@@ -100,6 +138,8 @@ def main() -> None:
     test_param_roundtrip()
     test_motor_targets_shape_and_source()
     test_two_ncas_with_same_params_match()
+    test_gain_default_is_identity()
+    test_gain_changes_dynamics()
     print(
         f"OK: NCA tests passed. params={n}, state={STATE_SHAPE}, "
         f"motor_grid={MOTOR_ROWS}x{MOTOR_COLS}={N_MOTORS}, "
