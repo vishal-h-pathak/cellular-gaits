@@ -30,10 +30,17 @@ from cellular_gaits.nca import (
     GRID_W,
     MOTOR_COLS,
     MOTOR_ROWS,
+    N_LEGS,
     N_MOTORS,
     NCA,
+    SENSOR_SHAPE,
     STATE_SHAPE,
+    V1_N_PARAMS,
 )
+
+
+def _zero_sensors():
+    return torch.zeros(*SENSOR_SHAPE)
 
 
 def test_param_count() -> int:
@@ -107,10 +114,12 @@ def test_gain_default_is_identity() -> None:
 
     state = NCA.init_state(seed=0)
     ref = state.clone()
+    z = _zero_sensors()
     for _ in range(50):
         state = nca.step(state)
-        # reference = the old formula, no gain term at all
-        ref = torch.clamp(nca.conv2(torch.tanh(nca.conv1(ref))), -1.0, 1.0)
+        # reference = the old formula, no gain term at all; sensors zeroed
+        ref_in = torch.cat([ref, z], dim=1)
+        ref = torch.clamp(nca.conv2(torch.tanh(nca.conv1(ref_in))), -1.0, 1.0)
         assert torch.equal(state, ref), "gain=1.0 diverged from pre-gain rule"
 
 
@@ -131,6 +140,77 @@ def test_gain_changes_dynamics() -> None:
     assert not torch.allclose(a, b, atol=1e-4), "gain=3.0 had no effect"
 
 
+def test_zero_sensors_match_no_sensors() -> None:
+    """Passing an all-zero sensor map equals passing none (A/B integrity)."""
+    nca = NCA()
+    rng = np.random.default_rng(3)
+    nca.set_params(rng.normal(0, 0.5, size=nca.n_params))
+    s = NCA.init_state(seed=0)
+    a = nca.step(s)
+    b = nca.step(s, sensors=_zero_sensors())
+    assert torch.equal(a, b), "zero sensor map changed the output"
+
+
+def test_default_init_ignores_sensors() -> None:
+    """A default-constructed NCA (zero sensor weights) must be sensor-invariant."""
+    nca = NCA()
+    rng = np.random.default_rng(11)
+    nca.set_params(rng.normal(0, 0.5, size=nca.n_params))
+    # Re-zero sensor weights (set_params overwrote them); emulate fresh-from-v1.
+    nca.warm_start_from_v1(nca.flatten_params()[: V1_N_PARAMS])
+    s = NCA.init_state(seed=0)
+    live = NCA.build_sensor_map(
+        joint_angles_unit=rng.uniform(-1, 1, size=N_MOTORS),
+        foot_contacts=rng.integers(0, 2, size=N_LEGS),
+    )
+    a = nca.step(s, sensors=None)
+    b = nca.step(s, sensors=live)
+    assert torch.equal(a, b), "zero-weight sensors leaked into the output"
+
+
+def test_warm_start_reproduces_v1() -> None:
+    """A closed-loop NCA warm-started from v1 weights, run sensor-blind over a
+    multi-tick rollout, matches a 4-channel v1 rule exactly."""
+    rng = np.random.default_rng(5)
+    v1 = rng.normal(0, 0.5, size=V1_N_PARAMS).astype(np.float64)
+
+    nca = NCA()
+    nca.warm_start_from_v1(v1)
+
+    # Reference 4-channel rule with the same v1 weights.
+    c1w_n = 16 * CHANNELS * 9
+    w1 = torch.from_numpy(v1[:c1w_n].reshape(16, CHANNELS, 3, 3).astype(np.float32))
+    b1 = torch.from_numpy(v1[c1w_n : c1w_n + 16].astype(np.float32))
+    off = c1w_n + 16
+    w2 = torch.from_numpy(v1[off : off + CHANNELS * 16].reshape(CHANNELS, 16, 1, 1).astype(np.float32))
+    b2 = torch.from_numpy(v1[off + CHANNELS * 16 :].astype(np.float32))
+
+    import torch.nn.functional as F
+
+    state = NCA.init_state(seed=0)
+    ref = state.clone()
+    for _ in range(60):
+        state = nca.step(state)  # sensors blind
+        h = torch.tanh(F.conv2d(ref, w1, b1, padding=1))
+        ref = torch.clamp(F.conv2d(h, w2, b2), -1.0, 1.0)
+        assert torch.equal(state, ref), "warm-start diverged from v1 rule"
+
+
+def test_build_sensor_map_placement() -> None:
+    ja = np.linspace(-1, 1, N_MOTORS)
+    fc = np.array([1, 0, 1, 0, 1, 0], dtype=float)
+    m = NCA.build_sensor_map(ja, fc)
+    assert tuple(m.shape) == SENSOR_SHAPE
+    # joint angles in 7x6 block of channel 0
+    np.testing.assert_allclose(
+        m[0, 0, :MOTOR_ROWS, :MOTOR_COLS].reshape(-1).numpy(), ja, atol=1e-6
+    )
+    # contacts in bottom row of channel 1
+    np.testing.assert_allclose(m[0, 1, 7, :N_LEGS].numpy(), fc, atol=1e-6)
+    # channel 0 outside the motor block is zero
+    assert float(m[0, 0, 7, :].abs().sum()) == 0.0
+
+
 def main() -> None:
     n = test_param_count()
     test_init_state_shape_and_determinism()
@@ -140,6 +220,10 @@ def main() -> None:
     test_two_ncas_with_same_params_match()
     test_gain_default_is_identity()
     test_gain_changes_dynamics()
+    test_zero_sensors_match_no_sensors()
+    test_default_init_ignores_sensors()
+    test_warm_start_reproduces_v1()
+    test_build_sensor_map_placement()
     print(
         f"OK: NCA tests passed. params={n}, state={STATE_SHAPE}, "
         f"motor_grid={MOTOR_ROWS}x{MOTOR_COLS}={N_MOTORS}, "
