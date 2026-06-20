@@ -105,6 +105,27 @@ THREAT_HIT_RADIUS = 3.0  # survival radius: closer than this == hit
 # fly_speed * (start_distance / speed); calibrated in the validation run.
 THREAT_LEAD_DISTANCE = 15.0
 
+# Navigation (N-A) — hand-built bilateral "feeler" rangefinder + physical
+# obstacles. Obstacles are vertical cylinders that the fly *physically* collides
+# with (built into the world at construction, like the pebbles) AND that the
+# feelers sense. The feeler is a short-range proximity sensor split left/right by
+# bearing exactly like the looming eye-split, so the left-vs-right feeler
+# asymmetry carries which way to dodge.
+#
+# HONESTY: the feeler is a robotics-flavoured LIDAR-like distance sensor. Real
+# Drosophila avoid obstacles via vision / optic flow / visual looming, NOT a
+# rangefinder. Unlike escape (LC4/LPLC2 -> DNp01), navigation has NO clean
+# real-circuit seam — it is a capability demo, not a connectome bridge.
+FEELER_RANGE = 6.0  # max sensing distance to an obstacle SURFACE; beyond -> 0
+FEELER_HALF_ANGLE_DEG = 100.0  # forward field half-angle; obstacles outside -> ignored
+OBSTACLE_RADIUS = 2.0  # default physical radius of an obstacle cylinder (world units)
+OBSTACLE_HEIGHT = 3.0  # full height of the cylinder (tall enough the fly can't climb over)
+# The fly is "in contact" with an obstacle when its thorax is within this
+# distance of the obstacle SURFACE (center distance - radius). Used for the
+# collision count / time-in-contact penalty; the physical geom does the actual
+# blocking. Roughly the fly's body half-length so pressing against a wall counts.
+OBSTACLE_CONTACT_CLEARANCE = 1.0
+
 
 @dataclass
 class Perturbation:
@@ -158,7 +179,9 @@ class ImpulseSchedule:
 
 
 def _build_default_world(
-    uneven_ground: bool = False, terrain_seed: int = 0
+    uneven_ground: bool = False,
+    terrain_seed: int = 0,
+    obstacles: Optional["ObstacleField"] = None,
 ) -> FlatGroundWorld:
     fly = Fly()
     skel = Skeleton(
@@ -181,6 +204,8 @@ def _build_default_world(
     world = FlatGroundWorld()
     if uneven_ground:
         _add_pebbles(world, terrain_seed)
+    if obstacles is not None and obstacles.centers:
+        _add_obstacles(world, obstacles)
     world.add_fly(
         fly,
         spawn_position=(0.0, 0.0, 0.7),
@@ -226,6 +251,28 @@ def _add_pebbles(
             )
 
 
+def _add_obstacles(world: FlatGroundWorld, obstacles: "ObstacleField") -> None:
+    """Inject physical vertical-cylinder obstacles into the world.
+
+    Each obstacle is a collidable cylinder of radius ``obstacles.radius`` and
+    height ``OBSTACLE_HEIGHT``, standing on the floor at its world ``(x, y)``.
+    These are real MuJoCo geoms with default contact settings (like the pebbles),
+    so the fly actually collides with them; the matching ``ObstacleField`` on the
+    env senses them via the feelers.
+    """
+    wb = world.mjcf_root.worldbody
+    half_h = 0.5 * OBSTACLE_HEIGHT
+    for i, (cx, cy) in enumerate(obstacles.centers):
+        wb.add(
+            "geom",
+            name=f"obstacle_{i}",
+            type="cylinder",
+            size=[float(obstacles.radius), half_h],
+            pos=[float(cx), float(cy), half_h],  # base on the floor
+            rgba=[0.35, 0.30, 0.45, 1.0],
+        )
+
+
 @dataclass
 class OdorField:
     """Smooth odor/taste concentration field around a point source.
@@ -251,6 +298,35 @@ class OdorField:
         p = np.asarray(xy, dtype=np.float64).reshape(-1)[:2]
         s = np.asarray(self.source_xy, dtype=np.float64).reshape(-1)[:2]
         return float(np.linalg.norm(p - s))
+
+
+@dataclass
+class ObstacleField:
+    """A set of vertical-cylinder obstacles on the flat ground.
+
+    Each obstacle is a disk of radius ``radius`` centered at a world ``(x, y)``;
+    all obstacles in one field share the radius. The same field is used two ways:
+    it is baked into the MuJoCo world as *physical* collidable cylinders (so the
+    fly actually bumps into them) and it is *sensed* by :meth:`FlyEnv.read_feelers`
+    (so the controller can steer around them). Distances are measured to the
+    cylinder SURFACE (center distance - radius), clamped at 0 inside the disk.
+    """
+
+    centers: tuple[tuple[float, float], ...] = ()
+    radius: float = OBSTACLE_RADIUS
+
+    def surface_distances(self, xy) -> np.ndarray:
+        """Distance from ``xy`` to each obstacle surface (>= 0; 0 inside)."""
+        if not self.centers:
+            return np.zeros(0, dtype=np.float64)
+        p = np.asarray(xy, dtype=np.float64).reshape(-1)[:2]
+        c = np.asarray(self.centers, dtype=np.float64).reshape(-1, 2)
+        d_center = np.linalg.norm(c - p[None, :], axis=1)
+        return np.maximum(0.0, d_center - self.radius)
+
+    def min_surface_distance(self, xy) -> float:
+        d = self.surface_distances(xy)
+        return float(d.min()) if d.size else float("inf")
 
 
 @dataclass
@@ -311,12 +387,24 @@ class FlyEnv:
         loom_size_gain: float = LOOM_SIZE_GAIN,
         loom_exp_gain: float = LOOM_EXP_GAIN,
         loom_exp_ref: float = LOOM_EXP_REF,
+        obstacles: "ObstacleField | list | tuple | None" = None,
+        obstacle_radius: float = OBSTACLE_RADIUS,
+        feeler_range: float = FEELER_RANGE,
+        feeler_half_angle_deg: float = FEELER_HALF_ANGLE_DEG,
     ) -> None:
+        # Normalize the obstacle layout to an ObstacleField (the geoms baked into
+        # the world AND the sensed field share one source of truth).
+        if obstacles is not None and not isinstance(obstacles, ObstacleField):
+            obstacles = ObstacleField(
+                centers=tuple(tuple(c) for c in obstacles), radius=obstacle_radius
+            )
         if world is not None:
             self.world = world
         else:
             self.world = _build_default_world(
-                uneven_ground=uneven_ground, terrain_seed=terrain_seed
+                uneven_ground=uneven_ground,
+                terrain_seed=terrain_seed,
+                obstacles=obstacles,
             )
         self.sim = Simulation(self.world)
         if renderer_camera is not None:
@@ -362,6 +450,14 @@ class FlyEnv:
         self._loom_size_gain = float(loom_size_gain)
         self._loom_exp_gain = float(loom_exp_gain)
         self._loom_exp_ref = float(loom_exp_ref)
+
+        # Navigation state (obstacles + feelers). ``_obstacles`` is the SENSED
+        # field; the physical geoms are fixed in the world at construction, so a
+        # later set_obstacles only re-points the feelers (use it with a layout
+        # matching the geoms that were built).
+        self._obstacles: Optional[ObstacleField] = obstacles
+        self._feeler_range = float(feeler_range)
+        self._feeler_half_angle = float(np.radians(feeler_half_angle_deg))
 
     # ---- geometry / state helpers -------------------------------------------
     def _thorax_xyz(self) -> np.ndarray:
@@ -552,6 +648,55 @@ class FlyEnv:
         }
         return float(loom_l), float(loom_r), info
 
+    # ---- navigation / feelers -----------------------------------------------
+    def set_obstacles(self, obstacles: "ObstacleField | list | tuple | None") -> None:
+        """Set the SENSED obstacle field (re-points the feelers).
+
+        The physical collidable geoms are baked into the world at construction;
+        this only updates what the feelers report, so the layout passed here
+        should match the geoms that were built (use ``FlyEnv(obstacles=...)`` to
+        get both). Passing a plain list of centers wraps it in an ObstacleField
+        with the default radius.
+        """
+        if obstacles is not None and not isinstance(obstacles, ObstacleField):
+            obstacles = ObstacleField(centers=tuple(tuple(c) for c in obstacles))
+        self._obstacles = obstacles
+
+    def read_feelers(self) -> tuple[float, float]:
+        """Bilateral short-range feeler (obstacle proximity): (feeler_L, feeler_R).
+
+        From the thorax, over the forward visual field, find the NEAREST obstacle
+        within ``feeler_range`` of its surface and inside the forward half-angle,
+        and report its proximity ``clip(1 - d_surface / feeler_range, 0, 1)`` (a
+        close wall -> near 1, nothing in range -> 0). The proximity is split
+        between the two feelers by the obstacle's body-frame bearing ``phi`` (CCW
+        positive = to the fly's left), exactly like the looming eye-split:
+
+            feeler_L = p * 0.5*(1 + sin(phi))   feeler_R = p * 0.5*(1 - sin(phi))
+
+        An obstacle dead-ahead (phi=0) excites both feelers equally; an offset
+        obstacle weights the near side, so the L-R feeler difference carries which
+        way to dodge. Returns (0, 0) when no obstacles are set or none are in the
+        forward field — so a nav policy run with no obstacles == the pure forager.
+        """
+        if self._obstacles is None or not self._obstacles.centers:
+            return 0.0, 0.0
+        fly_xy = self._thorax_xyz()[:2]
+        yaw = self._thorax_yaw()
+        c = np.asarray(self._obstacles.centers, dtype=np.float64).reshape(-1, 2)
+        rel = c - fly_xy[None, :]
+        d_surf = np.maximum(0.0, np.linalg.norm(rel, axis=1) - self._obstacles.radius)
+        phi = np.arctan2(rel[:, 1], rel[:, 0]) - yaw
+        phi = np.arctan2(np.sin(phi), np.cos(phi))  # wrap to [-pi, pi]
+        in_field = (d_surf < self._feeler_range) & (np.abs(phi) <= self._feeler_half_angle)
+        if not np.any(in_field):
+            return 0.0, 0.0
+        idx = np.where(in_field)[0]
+        nearest = idx[int(np.argmin(d_surf[idx]))]
+        prox = float(np.clip(1.0 - d_surf[nearest] / self._feeler_range, 0.0, 1.0))
+        s = float(np.sin(phi[nearest]))
+        return prox * 0.5 * (1.0 + s), prox * 0.5 * (1.0 - s)
+
     def _obs(self) -> dict:
         return {"thorax_xyz": self._thorax_xyz(), "time": float(self.sim.time)}
 
@@ -647,6 +792,7 @@ class FlyEnv:
         loom_log: list[tuple[float, float]] = []  # (loom_L, loom_R) per step
         threat_log: list = []  # threat xy (or None before onset) per step
         threat_dist_log: list[float] = []  # fly<->threat distance per step
+        feeler_log: list[tuple[float, float]] = []  # (feeler_L, feeler_R) per step
 
         for t in range(n_steps):
             if pass_sensors:
@@ -664,6 +810,11 @@ class FlyEnv:
                     loom_log.append((lL, lR))
                     threat_log.append(linfo["threat_xy"])
                     threat_dist_log.append(linfo["d"])
+                if self._obstacles is not None:
+                    fL, fR = self.read_feelers()
+                    sensors["feeler_left"] = fL
+                    sensors["feeler_right"] = fR
+                    feeler_log.append((fL, fR))
                 targets = np.asarray(
                     policy(t, sensors), dtype=np.float64
                 ).reshape(-1)
@@ -726,6 +877,34 @@ class FlyEnv:
             threat_path = None
             threat_meta = None
 
+        # Navigation bookkeeping: per-step feeler log, collision count
+        # (time-in-contact: steps the thorax is within the contact clearance of
+        # an obstacle surface), and the closest approach to any obstacle.
+        if self._obstacles is not None and self._obstacles.centers:
+            feeler_arr = (
+                np.asarray(feeler_log, dtype=np.float64) if feeler_log else np.zeros((0, 2))
+            )
+            post = np.stack(thorax_log[1:], axis=0)[:, :2] if len(thorax_log) > 1 else np.zeros((0, 2))
+            surf = np.array(
+                [self._obstacles.min_surface_distance(p) for p in post], dtype=np.float64
+            )
+            in_contact = surf < OBSTACLE_CONTACT_CLEARANCE
+            collision_count = int(in_contact.sum())
+            collided = bool(collision_count > 0)
+            obstacle_min_surface = float(surf.min()) if surf.size else float("inf")
+            obstacle_meta = {
+                "centers": [[float(x), float(y)] for (x, y) in self._obstacles.centers],
+                "radius": float(self._obstacles.radius),
+                "feeler_range": float(self._feeler_range),
+                "contact_clearance": float(OBSTACLE_CONTACT_CLEARANCE),
+            }
+        else:
+            feeler_arr = np.zeros((0, 2))
+            collision_count = 0
+            collided = False
+            obstacle_min_surface = float("nan")
+            obstacle_meta = None
+
         traj = {
             "thorax_xyz": np.stack(thorax_log, axis=0),
             "joint_targets": np.stack(targets_log, axis=0)
@@ -757,5 +936,10 @@ class FlyEnv:
             "threat_min_dist": threat_min_dist,
             "threat_hit": hit,
             "threat": threat_meta,
+            "feeler": feeler_arr,
+            "collision_count": collision_count,
+            "collided": collided,
+            "obstacle_min_surface": obstacle_min_surface,
+            "obstacles": obstacle_meta,
         }
         return fitness, traj

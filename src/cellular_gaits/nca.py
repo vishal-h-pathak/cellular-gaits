@@ -63,6 +63,29 @@ evolution moves those weights off zero (bilateral-zeroed == closed-loop
 behaviour). The default ``NCA()`` (``chemo=False, loom=False``) is unchanged and
 stays bit-identical to the closed-loop controller.
 
+Navigation sensors (N-A)
+------------------------
+``NCA(nav=True)`` is the **synthesis** mode: the fly must *seek a goal* and
+*avoid obstacles* at once. It carries **both** the bilateral odor goal-beacon
+**and** two new bilateral *feeler* channels, so ``conv1`` widens to
+``CHANNELS + SENSOR_CHANNELS + CHEMO_CHANNELS + FEELER_CHANNELS`` =
+``4 + 2 + 2 + 2 = 10`` input channels (n_params = 1524). Channels 6-7 are the
+odor beacon (identical layout to the chemo model); channels 8-9 are the feeler
+proximity reading — ``feeler_left`` over the left half of the motor block,
+``feeler_right`` over the right half, the same bilateral topographic split as the
+odor/loom cues. The whole point is again a left-vs-right asymmetry: the *detour
+direction* must fall out of ``feeler_L`` vs ``feeler_R``, not a hard-coded swerve,
+and it must be *arbitrated* against the turn-toward-goal carried by the odor L-R.
+
+``warm_start_from_chemo`` loads the trained 8-input chemotaxis weights into the
+first eight input channels (state + proprio + odor) and **zero-inits the two new
+feeler channels (8-9)**, copying conv1.bias and all of conv2 verbatim. So a nav
+NCA with the feelers zeroed (or the feeler weights at zero) reproduces the
+chemotaxis dynamics **bit-for-bit** until evolution moves the feeler weights off
+zero — the A/B integrity check. ``nav`` is mutually exclusive with
+``chemo``/``loom`` (a model carries one cue configuration). All chemo/loom/
+closed-loop/v1 paths are untouched; nav is purely additive.
+
 Motor cells: 42 cells laid out as a contiguous 7x6 sub-grid (rows 0-6,
 cols 0-5). Their channel-0 values are read in row-major order and become
 joint targets for Flygym's 42 LEGS_ACTIVE_ONLY position actuators.
@@ -84,6 +107,7 @@ CHANNELS = 4
 SENSOR_CHANNELS = 2  # proprio: ch0 joint angles, ch1 foot contacts
 CHEMO_CHANNELS = 2  # bilateral odor: ch0 left antenna (cL), ch1 right (cR)
 LOOM_CHANNELS = 2  # bilateral loom: ch0 left eye (loom_L), ch1 right eye (loom_R)
+FEELER_CHANNELS = 2  # bilateral feeler: ch0 left field, ch1 right field (obstacle proximity)
 HIDDEN_DEFAULT = 16
 
 MOTOR_ROWS = 7
@@ -100,6 +124,8 @@ SENSOR_SHAPE = (1, SENSOR_CHANNELS, GRID_H, GRID_W)
 CHEMO_COL_SPLIT = MOTOR_COLS // 2  # cols [0, SPLIT) = left, [SPLIT, MOTOR_COLS) = right
 # Loom channels reuse the identical left/right split (left eye -> left columns).
 LOOM_COL_SPLIT = MOTOR_COLS // 2
+# Feeler channels reuse the identical left/right split (left feeler -> left columns).
+FEELER_COL_SPLIT = MOTOR_COLS // 2
 
 # v1 (open-loop) parameter count, for warm-start validation. conv1 4->16 (3x3)
 # = 4*16*9 + 16 = 592; conv2 16->4 (1x1) = 16*4 + 4 = 68; total 660.
@@ -113,6 +139,12 @@ CL_N_PARAMS = (
     (CHANNELS + SENSOR_CHANNELS) * HIDDEN_DEFAULT * 9 + HIDDEN_DEFAULT
 ) + (HIDDEN_DEFAULT * CHANNELS + CHANNELS)
 
+# Chemo/loom (8-input) parameter count, for nav warm-start validation. conv1
+# (4+2+2)->16 (3x3) = 8*16*9 + 16 = 1168; conv2 unchanged = 68; total 1236.
+CHEMO_N_PARAMS = (
+    (CHANNELS + SENSOR_CHANNELS + CHEMO_CHANNELS) * HIDDEN_DEFAULT * 9 + HIDDEN_DEFAULT
+) + (HIDDEN_DEFAULT * CHANNELS + CHANNELS)
+
 
 class NCA(nn.Module):
     def __init__(
@@ -121,19 +153,30 @@ class NCA(nn.Module):
         gain: float = 1.0,
         chemo: bool = False,
         loom: bool = False,
+        nav: bool = False,
     ) -> None:
         super().__init__()
         self.hidden = hidden
-        # chemo=False, loom=False: 6-input closed-loop controller (4 state + 2
-        #   proprio).
+        # chemo=False, loom=False, nav=False: 6-input closed-loop controller
+        #   (4 state + 2 proprio).
         # chemo=True: 8-input chemotaxis controller (+ 2 bilateral odor channels).
         # loom=True:  8-input escape controller (+ 2 bilateral loom channels).
-        # The two bilateral cues are mutually exclusive.
-        if chemo and loom:
-            raise ValueError("NCA: chemo and loom are mutually exclusive")
+        # nav=True:   10-input navigation controller (+ 2 odor + 2 feeler
+        #   channels) — the synthesis mode: seek a goal AND avoid obstacles.
+        # The cue configurations are mutually exclusive.
+        if sum((bool(chemo), bool(loom), bool(nav))) > 1:
+            raise ValueError("NCA: chemo, loom, nav are mutually exclusive")
         self.chemo = bool(chemo)
         self.loom = bool(loom)
-        extra_channels = CHEMO_CHANNELS if chemo else (LOOM_CHANNELS if loom else 0)
+        self.nav = bool(nav)
+        if nav:
+            extra_channels = CHEMO_CHANNELS + FEELER_CHANNELS
+        elif chemo:
+            extra_channels = CHEMO_CHANNELS
+        elif loom:
+            extra_channels = LOOM_CHANNELS
+        else:
+            extra_channels = 0
         self.sensor_channels = SENSOR_CHANNELS + extra_channels
         self.sensor_shape = (1, self.sensor_channels, GRID_H, GRID_W)
         # Criticality knob: scales the pre-activation fed to tanh. gain=1.0 is
@@ -272,6 +315,48 @@ class NCA(nn.Module):
         return sensors
 
     @staticmethod
+    def build_nav_sensor_map(
+        joint_angles_unit: np.ndarray,
+        foot_contacts: np.ndarray,
+        odor_left: float,
+        odor_right: float,
+        feeler_left: float,
+        feeler_right: float,
+    ) -> torch.Tensor:
+        """Lay proprio + bilateral odor + bilateral feeler into a (1, 6, 8, 8) tensor.
+
+        Channels 0-1 are the proprio map (identical to ``build_sensor_map``).
+        Channels 2-3 are the bilateral odor goal-beacon (identical layout to
+        ``build_chemo_sensor_map``: ``odor_left`` over the left half of the 7x6
+        motor block, ``odor_right`` over the right half). Channels 4-5 are the
+        bilateral feeler (obstacle proximity) using the *same* left/right split:
+        ``feeler_left`` over the left half, ``feeler_right`` over the right half.
+        Two bilateral asymmetries presented over the same motor cells — odor L-R
+        says which way the goal is, feeler L-R says which way the wall is — and
+        the controller must arbitrate them.
+        """
+        ja = np.asarray(joint_angles_unit, dtype=np.float32).reshape(-1)
+        fc = np.asarray(foot_contacts, dtype=np.float32).reshape(-1)
+        if ja.size != N_MOTORS:
+            raise ValueError(f"expected {N_MOTORS} joint angles, got {ja.size}")
+        if fc.size != N_LEGS:
+            raise ValueError(f"expected {N_LEGS} foot contacts, got {fc.size}")
+        sensors = torch.zeros(
+            1, SENSOR_CHANNELS + CHEMO_CHANNELS + FEELER_CHANNELS, GRID_H, GRID_W
+        )
+        sensors[0, 0, :MOTOR_ROWS, :MOTOR_COLS] = torch.from_numpy(
+            ja.reshape(MOTOR_ROWS, MOTOR_COLS)
+        )
+        sensors[0, 1, CONTACT_ROW, :N_LEGS] = torch.from_numpy(fc)
+        # ch2 = left antenna odor, ch3 = right antenna odor (goal beacon).
+        sensors[0, 2, :MOTOR_ROWS, :CHEMO_COL_SPLIT] = float(odor_left)
+        sensors[0, 3, :MOTOR_ROWS, CHEMO_COL_SPLIT:MOTOR_COLS] = float(odor_right)
+        # ch4 = left feeler, ch5 = right feeler (obstacle proximity).
+        sensors[0, 4, :MOTOR_ROWS, :FEELER_COL_SPLIT] = float(feeler_left)
+        sensors[0, 5, :MOTOR_ROWS, FEELER_COL_SPLIT:MOTOR_COLS] = float(feeler_right)
+        return sensors
+
+    @staticmethod
     def init_state(seed: int | None = None) -> torch.Tensor:
         g = torch.Generator()
         if seed is not None:
@@ -368,6 +453,49 @@ class NCA(nn.Module):
         with torch.no_grad():
             self.conv1.weight.zero_()
             self.conv1.weight[:, :in_cl, :, :].copy_(torch.from_numpy(c1w))
+            self.conv1.bias.copy_(torch.from_numpy(c1b))
+            self.conv2.weight.copy_(torch.from_numpy(c2w))
+            self.conv2.bias.copy_(torch.from_numpy(c2b))
+
+    def warm_start_from_chemo(self, chemo_vec: np.ndarray) -> None:
+        """Load a chemo (8-input-channel) parameter vector into a nav NCA.
+
+        The chemo layout is conv1.weight (16, 8, 3, 3), conv1.bias (16,),
+        conv2.weight (4, 16, 1, 1), conv2.bias (4,). We copy conv1's weights into
+        the first 8 input channels of this 10-input conv1 (state + proprio +
+        odor), **leave the 2 feeler channels (8-9) at zero**, and copy conv1.bias
+        / conv2 verbatim. The result reproduces the chemotaxis dynamics exactly
+        when the feeler channels are zeroed (A/B integrity): feelers-zeroed nav ==
+        the trained forager. The trained chemotaxis controller is the seeking
+        prior we stack obstacle avoidance on top of.
+        """
+        if not self.nav:
+            raise ValueError(
+                "warm_start_from_chemo requires NCA(nav=True); use "
+                "warm_start_from_closed_loop for the 8-input chemo/loom model"
+            )
+        v = np.asarray(chemo_vec, dtype=np.float32).reshape(-1)
+        if v.size != CHEMO_N_PARAMS:
+            raise ValueError(
+                f"warm_start_from_chemo: expected {CHEMO_N_PARAMS} chemo params, "
+                f"got {v.size}"
+            )
+        in_chemo = CHANNELS + SENSOR_CHANNELS + CHEMO_CHANNELS  # 8
+        c1w_n = self.hidden * in_chemo * 9
+        c1b_n = self.hidden
+        c2w_n = CHANNELS * self.hidden
+        c2b_n = CHANNELS
+        off = 0
+        c1w = v[off : off + c1w_n].reshape(self.hidden, in_chemo, 3, 3)
+        off += c1w_n
+        c1b = v[off : off + c1b_n]
+        off += c1b_n
+        c2w = v[off : off + c2w_n].reshape(CHANNELS, self.hidden, 1, 1)
+        off += c2w_n
+        c2b = v[off : off + c2b_n]
+        with torch.no_grad():
+            self.conv1.weight.zero_()
+            self.conv1.weight[:, :in_chemo, :, :].copy_(torch.from_numpy(c1w))
             self.conv1.bias.copy_(torch.from_numpy(c1b))
             self.conv2.weight.copy_(torch.from_numpy(c2w))
             self.conv2.bias.copy_(torch.from_numpy(c2b))
