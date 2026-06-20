@@ -79,6 +79,32 @@ ANTENNA_FORWARD_OFFSET = 1.0
 ANTENNA_LATERAL_OFFSET = 0.6
 DEFAULT_ODOR_LAMBDA = 12.0  # decay length λ of the concentration field
 
+# Escape / looming (X-A) — a virtual threat on a collision course generates a
+# bilateral looming signal at the two eyes. The looming magnitude blends an
+# *angular-size* term (a stand-in for size-tuned LPLC2) and an *expansion-rate*
+# term (a stand-in for edge/expansion-tuned LC4); it is then split between the
+# two eyes by the threat's bearing so a left-vs-right looming asymmetry (the
+# whole point — it makes the escape *directed*) is available to the controller.
+# This front-end is HAND-BUILT: it stands in for the real LC4/LPLC2 -> DNp01
+# (Giant Fiber) circuit, which is the connectome endgame and is not built here.
+# Defaults are calibrated in the validation run and can be overridden per FlyEnv.
+LOOM_SIZE_GAIN = 1.0  # weight on the normalized angular-size term (LPLC2-like)
+LOOM_EXP_GAIN = 1.0  # weight on the normalized expansion-rate term (LC4-like)
+LOOM_EXP_REF = 6.0  # expansion-rate (rad/s of angular size) that normalizes to 1
+# Threat stimulus defaults (world units; speed in units/s). Calibrated so an
+# untrained walker gets hit but escape is achievable.
+THREAT_RADIUS = 2.0  # physical radius of the looming object (sets angular size)
+THREAT_SPEED = 45.0  # approach speed along the collision course (calibrated)
+THREAT_START_DISTANCE = 18.0  # distance from the fly when the threat launches
+THREAT_HIT_RADIUS = 3.0  # survival radius: closer than this == hit
+# Target leading: the threat aims not at the fly's onset position but at where a
+# constant-velocity fly would be when the threat arrives (aim = onset_pos +
+# lead_distance * heading). This makes the threat a genuine collision course
+# from ANY azimuth — a fly that keeps walking straight is hit, and only an
+# escape maneuver (turning/fleeing off-course) breaks the intercept. Roughly
+# fly_speed * (start_distance / speed); calibrated in the validation run.
+THREAT_LEAD_DISTANCE = 15.0
+
 
 @dataclass
 class Perturbation:
@@ -228,6 +254,42 @@ class OdorField:
 
 
 @dataclass
+class Threat:
+    """A virtual looming object on a collision course with the fly.
+
+    The threat appears at a seeded time mid-episode and flies straight at a fixed
+    ``speed`` toward the fly's position *at the moment of onset* (a collision
+    course), starting ``start_distance`` away along ``azimuth_deg`` (degrees CCW
+    from the world +x axis = the fly's spawn heading). It does not home: once
+    launched it travels a straight line through the aim point and past it, so a
+    fly that steps off the collision axis is missed. ``radius`` sets the object's
+    angular size; ``hit_radius`` is the survival threshold (the fly is "hit" if
+    the threat ever passes within it).
+
+    ``seed`` fully determines the onset step (drawn from ``window`` * n_steps),
+    so a given (seed, n_steps) yields identical threats across controllers and
+    sequential / parallel evaluation agree exactly. The aim point is captured
+    live at onset, so the stimulus is genuinely closed-loop (it targets wherever
+    the fly has walked to), and that too is deterministic given the controller.
+    """
+
+    azimuth_deg: float = 0.0
+    speed: float = THREAT_SPEED
+    radius: float = THREAT_RADIUS
+    start_distance: float = THREAT_START_DISTANCE
+    hit_radius: float = THREAT_HIT_RADIUS
+    lead_distance: float = THREAT_LEAD_DISTANCE
+    window: tuple[float, float] = (0.2, 0.4)
+    seed: int = 0
+
+    def onset_step(self, n_steps: int) -> int:
+        rng = np.random.default_rng(self.seed)
+        lo = int(round(self.window[0] * n_steps))
+        hi = max(lo + 1, int(round(self.window[1] * n_steps)))
+        return int(rng.integers(lo, hi))
+
+
+@dataclass
 class StepReward:
     fwd_dx: float
     below_threshold: bool
@@ -246,6 +308,9 @@ class FlyEnv:
         terrain_seed: int = 0,
         antenna_forward: float = ANTENNA_FORWARD_OFFSET,
         antenna_lateral: float = ANTENNA_LATERAL_OFFSET,
+        loom_size_gain: float = LOOM_SIZE_GAIN,
+        loom_exp_gain: float = LOOM_EXP_GAIN,
+        loom_exp_ref: float = LOOM_EXP_REF,
     ) -> None:
         if world is not None:
             self.world = world
@@ -286,6 +351,17 @@ class FlyEnv:
         self._odor: Optional[OdorField] = None
         self._antenna_forward = float(antenna_forward)
         self._antenna_lateral = float(antenna_lateral)
+
+        # Escape / looming state (set via set_threat). The aim point is captured
+        # live at onset; _prev_theta tracks angular size for the expansion rate.
+        self._threat: Optional[Threat] = None
+        self._threat_onset: int = -1
+        self._threat_aim: Optional[np.ndarray] = None  # lead-point captured at onset
+        self._threat_dir: Optional[np.ndarray] = None  # unit vec fly->threat origin
+        self._prev_theta: float = 0.0
+        self._loom_size_gain = float(loom_size_gain)
+        self._loom_exp_gain = float(loom_exp_gain)
+        self._loom_exp_ref = float(loom_exp_ref)
 
     # ---- geometry / state helpers -------------------------------------------
     def _thorax_xyz(self) -> np.ndarray:
@@ -352,6 +428,130 @@ class FlyEnv:
         pos_l, pos_r = self.antenna_positions()
         return self._odor.concentration(pos_l), self._odor.concentration(pos_r)
 
+    # ---- escape / looming ---------------------------------------------------
+    def set_threat(self, threat: Optional[Threat]) -> None:
+        self._threat = threat
+
+    def _arm_threat(self, n_steps: int) -> None:
+        if self._threat is not None:
+            self._threat_onset = self._threat.onset_step(n_steps)
+        else:
+            self._threat_onset = -1
+        self._threat_aim = None
+        self._threat_dir = None
+        self._prev_theta = 0.0
+
+    def _capture_threat_geometry(self) -> None:
+        """At onset, fix the lead aim point and the launch direction.
+
+        ``azimuth_deg`` is interpreted in the fly's onset heading frame (0 =
+        straight ahead, +90 = the fly's left), so "left"/"right"/"front" are
+        relative to where the fly is actually facing. The aim point leads the fly
+        by ``lead_distance`` along its heading so the threat intercepts a fly that
+        keeps walking straight.
+        """
+        fly_xy = self._thorax_xyz()[:2]
+        yaw = self._thorax_yaw()
+        fwd = np.array([np.cos(yaw), np.sin(yaw)], dtype=np.float64)
+        a = np.radians(self._threat.azimuth_deg)
+        # direction from the (lead) aim point out to where the threat starts,
+        # rotated into the onset heading frame.
+        d_local = np.array([np.cos(a), np.sin(a)], dtype=np.float64)
+        c, s = np.cos(yaw), np.sin(yaw)
+        self._threat_dir = np.array(
+            [c * d_local[0] - s * d_local[1], s * d_local[0] + c * d_local[1]],
+            dtype=np.float64,
+        )
+        self._threat_aim = fly_xy + self._threat.lead_distance * fwd
+
+    def threat_position(self, step_idx: int) -> Optional[np.ndarray]:
+        """World (x, y) of the threat at ``step_idx`` (None before onset).
+
+        The threat launches ``start_distance`` away along the captured launch
+        direction from the lead aim point and travels straight toward it at
+        ``speed``, continuing past. Requires the geometry to have been captured
+        (it is, on the first sensed step >= onset).
+        """
+        if (
+            self._threat is None
+            or self._threat_onset < 0
+            or step_idx < self._threat_onset
+            or self._threat_aim is None
+            or self._threat_dir is None
+        ):
+            return None
+        elapsed_s = (step_idx - self._threat_onset) * CONTROL_DT_S
+        traveled = self._threat.speed * elapsed_s
+        # launch = aim + start_distance * dir; moving toward aim along -dir.
+        return self._threat_aim + (self._threat.start_distance - traveled) * self._threat_dir
+
+    def read_loom(self) -> tuple[float, float, dict]:
+        """Bilateral looming signal (loom_L, loom_R) plus diagnostics.
+
+        Returns ``(loom_L, loom_R, info)``. With no threat, or before onset,
+        returns ``(0, 0, ...)``. On the first sensed step at/after onset the aim
+        point is captured (fly xy now) and the expansion rate is initialized to 0
+        so there is no spurious onset spike.
+
+        Looming magnitude ``m`` blends a normalized angular-size term and a
+        normalized positive expansion-rate term:
+            theta = 2*atan2(R, d)            angular size of the object
+            size_norm = theta / pi
+            rate = max(0, dtheta/dt)         only expansion (approach) counts
+            exp_norm = min(1, rate / exp_ref)
+            m = clip(size_gain*size_norm + exp_gain*exp_norm, 0, 1)
+        and is split between the eyes by the threat's body-frame bearing ``phi``
+        (CCW positive = to the fly's left):
+            loom_L = m * 0.5*(1 + sin(phi))   loom_R = m * 0.5*(1 - sin(phi))
+        A frontal threat (phi=0) excites both eyes equally; a threat directly to
+        one side excites only that eye. The L/R difference is the directional cue.
+        """
+        zero_info = {"theta": 0.0, "d": float("inf"), "phi": 0.0, "m": 0.0,
+                     "threat_xy": None, "present": False}
+        if self._threat is None or self._threat_onset < 0:
+            return 0.0, 0.0, zero_info
+        step = self._step_idx
+        if step < self._threat_onset:
+            return 0.0, 0.0, zero_info
+        just_armed = self._threat_aim is None
+        if just_armed:
+            self._capture_threat_geometry()
+        fly_xy = self._thorax_xyz()[:2]
+        tpos = self.threat_position(step)
+        if tpos is None:
+            return 0.0, 0.0, zero_info
+        rel = tpos - fly_xy
+        d = float(np.linalg.norm(rel))
+        theta = 2.0 * float(np.arctan2(self._threat.radius, max(d, 1e-9)))
+        if just_armed:
+            self._prev_theta = theta  # no expansion spike on the onset frame
+        rate = max(0.0, (theta - self._prev_theta) / CONTROL_DT_S)
+        self._prev_theta = theta
+        size_norm = theta / np.pi
+        exp_norm = min(1.0, rate / self._loom_exp_ref) if self._loom_exp_ref > 0 else 0.0
+        m = float(
+            np.clip(
+                self._loom_size_gain * size_norm + self._loom_exp_gain * exp_norm,
+                0.0,
+                1.0,
+            )
+        )
+        yaw = self._thorax_yaw()
+        phi = float(np.arctan2(rel[1], rel[0]) - yaw)
+        phi = float(np.arctan2(np.sin(phi), np.cos(phi)))  # wrap to [-pi, pi]
+        s = np.sin(phi)
+        loom_l = m * 0.5 * (1.0 + s)
+        loom_r = m * 0.5 * (1.0 - s)
+        info = {
+            "theta": theta,
+            "d": d,
+            "phi": phi,
+            "m": m,
+            "threat_xy": [float(tpos[0]), float(tpos[1])],
+            "present": True,
+        }
+        return float(loom_l), float(loom_r), info
+
     def _obs(self) -> dict:
         return {"thorax_xyz": self._thorax_xyz(), "time": float(self.sim.time)}
 
@@ -385,6 +585,10 @@ class FlyEnv:
         self._z_threshold = Z_FALL_FRACTION * float(self._initial_thorax_xyz[2])
         self._step_idx = 0
         self.sim.mj_data.xfrc_applied[self._thorax_body_id, :3] = 0.0
+        # Reset per-rollout threat run-state (onset is (re)armed by rollout).
+        self._threat_aim = None
+        self._threat_dir = None
+        self._prev_theta = 0.0
         return self._obs()
 
     def step(self, joint_targets_unit: np.ndarray) -> tuple[dict, StepReward, bool, dict]:
@@ -431,6 +635,7 @@ class FlyEnv:
         """
         obs = self.reset()
         self._arm_impulse(n_steps)
+        self._arm_threat(n_steps)
         yaw0 = self._thorax_yaw()
 
         thorax_log: list[np.ndarray] = [obs["thorax_xyz"].copy()]
@@ -439,6 +644,9 @@ class FlyEnv:
         yaw_log: list[float] = [yaw0]
         z_log: list[float] = [float(obs["thorax_xyz"][2])]
         chemo_log: list[tuple[float, float]] = []
+        loom_log: list[tuple[float, float]] = []  # (loom_L, loom_R) per step
+        threat_log: list = []  # threat xy (or None before onset) per step
+        threat_dist_log: list[float] = []  # fly<->threat distance per step
 
         for t in range(n_steps):
             if pass_sensors:
@@ -449,6 +657,13 @@ class FlyEnv:
                     sensors["c_left"] = cl
                     sensors["c_right"] = cr
                     chemo_log.append((cl, cr))
+                if self._threat is not None:
+                    lL, lR, linfo = self.read_loom()
+                    sensors["loom_left"] = lL
+                    sensors["loom_right"] = lR
+                    loom_log.append((lL, lR))
+                    threat_log.append(linfo["threat_xy"])
+                    threat_dist_log.append(linfo["d"])
                 targets = np.asarray(
                     policy(t, sensors), dtype=np.float64
                 ).reshape(-1)
@@ -480,6 +695,37 @@ class FlyEnv:
             source_xy = None
             chemo_arr = np.zeros((0, 2))
 
+        # Escape bookkeeping: per-step loom, threat path, closest threat approach,
+        # and the hit / survival outcome.
+        if self._threat is not None:
+            loom_arr = np.asarray(loom_log, dtype=np.float64) if loom_log else np.zeros((0, 2))
+            finite_d = [d for d in threat_dist_log if np.isfinite(d)]
+            threat_min_dist = float(min(finite_d)) if finite_d else float("inf")
+            hit = bool(threat_min_dist < self._threat.hit_radius)
+            threat_path = [
+                ([float(p[0]), float(p[1])] if p is not None else None)
+                for p in threat_log
+            ]
+            threat_meta = {
+                "azimuth_deg": float(self._threat.azimuth_deg),
+                "speed": float(self._threat.speed),
+                "radius": float(self._threat.radius),
+                "start_distance": float(self._threat.start_distance),
+                "hit_radius": float(self._threat.hit_radius),
+                "onset_step": int(self._threat_onset),
+                "aim_xy": (
+                    [float(self._threat_aim[0]), float(self._threat_aim[1])]
+                    if self._threat_aim is not None
+                    else None
+                ),
+            }
+        else:
+            loom_arr = np.zeros((0, 2))
+            threat_min_dist = float("nan")
+            hit = False
+            threat_path = None
+            threat_meta = None
+
         traj = {
             "thorax_xyz": np.stack(thorax_log, axis=0),
             "joint_targets": np.stack(targets_log, axis=0)
@@ -506,5 +752,10 @@ class FlyEnv:
             "dist_start": dist_start,
             "dist_end": dist_end,
             "chemo": chemo_arr,
+            "loom": loom_arr,
+            "threat_path": threat_path,
+            "threat_min_dist": threat_min_dist,
+            "threat_hit": hit,
+            "threat": threat_meta,
         }
         return fitness, traj

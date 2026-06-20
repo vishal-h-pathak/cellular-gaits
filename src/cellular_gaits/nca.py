@@ -43,13 +43,25 @@ right value the right half (channels 6 and 7 respectively). This left-vs-right
 asymmetry is the whole point: turning toward the source must fall out of
 ``cL`` vs ``cR``, not a hard-coded bias.
 
+Escape / looming sensors (X-A)
+------------------------------
+``NCA(loom=True)`` is the **same 8-input architecture** as the chemo model, but
+the two extra channels carry a *bilateral looming* signal — ``loom_L`` at the
+left eye, ``loom_R`` at the right — instead of odor. Geometry and layout are
+identical (left value -> left half of the motor block, right -> right half), so
+the A/B / warm-start story is the same; only the *meaning* of the two channels
+differs. The L/R looming asymmetry is what makes the escape *directed*: which
+way the fly bolts must fall out of ``loom_L`` vs ``loom_R``, not a hard-coded
+turn. ``chemo`` and ``loom`` are mutually exclusive (a model carries one
+bilateral cue or the other).
+
 The same zero-init / A/B argument applies one level up:
 ``warm_start_from_closed_loop`` loads the trained 6-input closed-loop weights
-into the first six input channels and leaves the two chemo channels at zero, so
-a chemo NCA reproduces the closed-loop walking dynamics exactly until evolution
-moves the chemo weights off zero (``chemo``-zeroed == closed-loop behaviour).
-The default ``NCA()`` (``chemo=False``) is unchanged and stays bit-identical to
-the closed-loop controller.
+into the first six input channels and leaves the two bilateral channels at zero,
+so a chemo/loom NCA reproduces the closed-loop walking dynamics exactly until
+evolution moves those weights off zero (bilateral-zeroed == closed-loop
+behaviour). The default ``NCA()`` (``chemo=False, loom=False``) is unchanged and
+stays bit-identical to the closed-loop controller.
 
 Motor cells: 42 cells laid out as a contiguous 7x6 sub-grid (rows 0-6,
 cols 0-5). Their channel-0 values are read in row-major order and become
@@ -71,6 +83,7 @@ GRID_W = 8
 CHANNELS = 4
 SENSOR_CHANNELS = 2  # proprio: ch0 joint angles, ch1 foot contacts
 CHEMO_CHANNELS = 2  # bilateral odor: ch0 left antenna (cL), ch1 right (cR)
+LOOM_CHANNELS = 2  # bilateral loom: ch0 left eye (loom_L), ch1 right eye (loom_R)
 HIDDEN_DEFAULT = 16
 
 MOTOR_ROWS = 7
@@ -85,6 +98,8 @@ SENSOR_SHAPE = (1, SENSOR_CHANNELS, GRID_H, GRID_W)
 # Chemo channels split the 7x6 motor block into a left and a right half. The
 # left antenna value fills the left columns, the right antenna the right ones.
 CHEMO_COL_SPLIT = MOTOR_COLS // 2  # cols [0, SPLIT) = left, [SPLIT, MOTOR_COLS) = right
+# Loom channels reuse the identical left/right split (left eye -> left columns).
+LOOM_COL_SPLIT = MOTOR_COLS // 2
 
 # v1 (open-loop) parameter count, for warm-start validation. conv1 4->16 (3x3)
 # = 4*16*9 + 16 = 592; conv2 16->4 (1x1) = 16*4 + 4 = 68; total 660.
@@ -101,14 +116,25 @@ CL_N_PARAMS = (
 
 class NCA(nn.Module):
     def __init__(
-        self, hidden: int = HIDDEN_DEFAULT, gain: float = 1.0, chemo: bool = False
+        self,
+        hidden: int = HIDDEN_DEFAULT,
+        gain: float = 1.0,
+        chemo: bool = False,
+        loom: bool = False,
     ) -> None:
         super().__init__()
         self.hidden = hidden
-        # chemo=False: 6-input closed-loop controller (4 state + 2 proprio).
+        # chemo=False, loom=False: 6-input closed-loop controller (4 state + 2
+        #   proprio).
         # chemo=True: 8-input chemotaxis controller (+ 2 bilateral odor channels).
+        # loom=True:  8-input escape controller (+ 2 bilateral loom channels).
+        # The two bilateral cues are mutually exclusive.
+        if chemo and loom:
+            raise ValueError("NCA: chemo and loom are mutually exclusive")
         self.chemo = bool(chemo)
-        self.sensor_channels = SENSOR_CHANNELS + (CHEMO_CHANNELS if chemo else 0)
+        self.loom = bool(loom)
+        extra_channels = CHEMO_CHANNELS if chemo else (LOOM_CHANNELS if loom else 0)
+        self.sensor_channels = SENSOR_CHANNELS + extra_channels
         self.sensor_shape = (1, self.sensor_channels, GRID_H, GRID_W)
         # Criticality knob: scales the pre-activation fed to tanh. gain=1.0 is
         # the trained operating point (identity); <1 drives the CA toward the
@@ -213,6 +239,39 @@ class NCA(nn.Module):
         return sensors
 
     @staticmethod
+    def build_loom_sensor_map(
+        joint_angles_unit: np.ndarray,
+        foot_contacts: np.ndarray,
+        loom_left: float,
+        loom_right: float,
+    ) -> torch.Tensor:
+        """Lay proprio + bilateral loom out into a (1, 4, 8, 8) tensor.
+
+        Channels 0-1 are the proprio map (identical to ``build_sensor_map``).
+        Channels 2-3 are the bilateral looming reading: ``loom_left`` fills the
+        left half of the 7x6 motor block (cols [0, LOOM_COL_SPLIT)) and
+        ``loom_right`` the right half, so a left-vs-right looming difference is
+        presented as a left-vs-right spatial bias over the cells that drive the
+        legs. Geometry is identical to ``build_chemo_sensor_map``; only the cue's
+        meaning differs (looming threat instead of odor).
+        """
+        ja = np.asarray(joint_angles_unit, dtype=np.float32).reshape(-1)
+        fc = np.asarray(foot_contacts, dtype=np.float32).reshape(-1)
+        if ja.size != N_MOTORS:
+            raise ValueError(f"expected {N_MOTORS} joint angles, got {ja.size}")
+        if fc.size != N_LEGS:
+            raise ValueError(f"expected {N_LEGS} foot contacts, got {fc.size}")
+        sensors = torch.zeros(1, SENSOR_CHANNELS + LOOM_CHANNELS, GRID_H, GRID_W)
+        sensors[0, 0, :MOTOR_ROWS, :MOTOR_COLS] = torch.from_numpy(
+            ja.reshape(MOTOR_ROWS, MOTOR_COLS)
+        )
+        sensors[0, 1, CONTACT_ROW, :N_LEGS] = torch.from_numpy(fc)
+        # ch2 = left eye loom, ch3 = right eye loom.
+        sensors[0, 2, :MOTOR_ROWS, :LOOM_COL_SPLIT] = float(loom_left)
+        sensors[0, 3, :MOTOR_ROWS, LOOM_COL_SPLIT:MOTOR_COLS] = float(loom_right)
+        return sensors
+
+    @staticmethod
     def init_state(seed: int | None = None) -> torch.Tensor:
         g = torch.Generator()
         if seed is not None:
@@ -276,15 +335,16 @@ class NCA(nn.Module):
 
         The closed-loop layout is conv1.weight (16, 6, 3, 3), conv1.bias (16,),
         conv2.weight (4, 16, 1, 1), conv2.bias (4,). We copy conv1's weights
-        into the first 6 input channels of this 8-input conv1, leave the 2 chemo
-        channels at zero, and copy conv1.bias / conv2 verbatim. The result
-        reproduces the closed-loop dynamics exactly when the chemo channels are
-        zeroed (A/B integrity).
+        into the first 6 input channels of this 8-input conv1, leave the 2
+        bilateral (chemo or loom) channels at zero, and copy conv1.bias / conv2
+        verbatim. The result reproduces the closed-loop dynamics exactly when the
+        bilateral channels are zeroed (A/B integrity).
         """
-        if not self.chemo:
+        if not (self.chemo or self.loom):
             raise ValueError(
-                "warm_start_from_closed_loop requires NCA(chemo=True); "
-                "use warm_start_from_v1 for the 6-input closed-loop model"
+                "warm_start_from_closed_loop requires NCA(chemo=True) or "
+                "NCA(loom=True); use warm_start_from_v1 for the 6-input "
+                "closed-loop model"
             )
         v = np.asarray(cl_vec, dtype=np.float32).reshape(-1)
         if v.size != CL_N_PARAMS:
