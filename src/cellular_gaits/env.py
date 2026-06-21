@@ -120,6 +120,18 @@ FEELER_RANGE = 6.0  # max sensing distance to an obstacle SURFACE; beyond -> 0
 FEELER_HALF_ANGLE_DEG = 100.0  # forward field half-angle; obstacles outside -> ignored
 OBSTACLE_RADIUS = 2.0  # default physical radius of an obstacle cylinder (world units)
 OBSTACLE_HEIGHT = 3.0  # full height of the cylinder (tall enough the fly can't climb over)
+# Contact-solver cap for obstacle envs ONLY. A fly that gets pinned against a
+# physical obstacle generates a large contact set; MuJoCo's default Newton solver
+# then does a dense Cholesky factorization per iteration for up to 100 iterations,
+# which can blow a single rollout from ~2 s to ~40 s and stall the whole evolution.
+# Keeping the Newton solver (so the contact dynamics — and the calibrated feeler
+# cue signs / collision headroom — are preserved) but capping the iteration count
+# bounds the per-step cost: worst-case rollout drops to ~7 s with the warm-start
+# cue signs unchanged. Applied ONLY when obstacles are present, so chemo/loom/
+# closed-loop/v1 physics (no obstacles) are byte-for-byte unchanged.
+OBSTACLE_SOLVER = 2  # mujoco.mjtSolver.mjSOL_NEWTON (the default; we only cap iterations)
+OBSTACLE_SOLVER_ITERATIONS = 20
+OBSTACLE_SOLVER_LS_ITERATIONS = 10
 # The fly is "in contact" with an obstacle when its thorax is within this
 # distance of the obstacle SURFACE (center distance - radius). Used for the
 # collision count / time-in-contact penalty; the physical geom does the actual
@@ -407,6 +419,14 @@ class FlyEnv:
                 obstacles=obstacles,
             )
         self.sim = Simulation(self.world)
+        # Obstacle envs only: cap the contact-constraint solver so a pinned fly
+        # cannot blow up per-step cost (see OBSTACLE_SOLVER constants). opt is read
+        # live by mj_step, so setting it on the compiled model takes effect.
+        if obstacles is not None and obstacles.centers:
+            opt = self.sim.mj_model.opt
+            opt.solver = OBSTACLE_SOLVER
+            opt.iterations = OBSTACLE_SOLVER_ITERATIONS
+            opt.ls_iterations = OBSTACLE_SOLVER_LS_ITERATIONS
         if renderer_camera is not None:
             self.sim.set_renderer(
                 renderer_camera,
