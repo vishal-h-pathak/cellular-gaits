@@ -9,8 +9,7 @@ __pycache__/
 .venv/
 .python-version
 
-# uv
-uv.lock
+# uv — uv.lock IS tracked (committed) for reproducible envs across machines
 
 # Project artifacts
 checkpoints/
