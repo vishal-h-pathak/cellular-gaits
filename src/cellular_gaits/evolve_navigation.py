@@ -117,11 +117,18 @@ NAV_ROLLOUT_STEPS = 1000  # 4.0 s at 250 Hz
 # variation is genuinely limited by the forager's narrow homing band — an honest
 # constraint of warm-starting from this particular (imperfect) chemotaxis
 # controller, documented in the report.
+# Lateral offset 1.8 (with radius 2.0): under the CG contact solver the warm-start
+# forager's left-turning bias makes a body-RIGHT obstacle read near-dead-ahead, so
+# a 1.2 offset gives an ambiguous right-block cue. Pushing the offset to 1.8
+# (still < radius, so the path still clips the disk and the baseline collides)
+# restores a correctly-signed bilateral feeler cue on both block sides. The cue
+# stays stronger on the left than the right — an honest artifact of the forager's
+# left bias, documented in the report.
 DEFAULT_CONDITION_SPECS = (
-    ("g40_near_block_left", 40.0, 0.35, 1.2),
-    ("g40_near_block_right", 40.0, 0.35, -1.2),
-    ("g40_far_block_left", 40.0, 0.45, 1.2),
-    ("g40_far_block_right", 40.0, 0.45, -1.2),
+    ("g40_near_block_left", 40.0, 0.35, 1.8),
+    ("g40_near_block_right", 40.0, 0.35, -1.8),
+    ("g40_far_block_left", 40.0, 0.45, 1.8),
+    ("g40_far_block_right", 40.0, 0.45, -1.8),
 )
 
 
