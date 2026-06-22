@@ -39,6 +39,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Callable, Optional
 
+import mujoco
 import numpy as np
 
 from flygym import Simulation
@@ -105,12 +106,20 @@ THREAT_HIT_RADIUS = 3.0  # survival radius: closer than this == hit
 # fly_speed * (start_distance / speed); calibrated in the validation run.
 THREAT_LEAD_DISTANCE = 15.0
 
-# Navigation (N-A) — hand-built bilateral "feeler" rangefinder + physical
+# Navigation (N-A / N-RL) — hand-built bilateral "feeler" rangefinder + physical
 # obstacles. Obstacles are vertical cylinders that the fly *physically* collides
-# with (built into the world at construction, like the pebbles) AND that the
-# feelers sense. The feeler is a short-range proximity sensor split left/right by
-# bearing exactly like the looming eye-split, so the left-vs-right feeler
-# asymmetry carries which way to dodge.
+# with AND that the feelers sense. The feeler is a short-range proximity sensor
+# split left/right by bearing exactly like the looming eye-split, so the
+# left-vs-right feeler asymmetry carries which way to dodge.
+#
+# PHYSICAL BLOCKING (N-RL-PHYS): FlyGym builds every fly geom with
+# contype=conaffinity=0 and enables collisions ONLY through explicit <pair>
+# elements (it pairs each contact body segment with the ground in
+# world.py::_set_ground_contact). A bare cylinder geom therefore generates NO
+# fly contact — the fly walks through it. So obstacles are made solid the same
+# way the ground is: ``_add_obstacles`` adds an explicit contact <pair> from
+# every fly contact-body geom (the LEGS_THORAX_ABDOMEN_HEAD set used for ground)
+# to each obstacle cylinder. Without those pairs the obstacle is sensed-only.
 #
 # HONESTY: the feeler is a robotics-flavoured LIDAR-like distance sensor. Real
 # Drosophila avoid obstacles via vision / optic flow / visual looming, NOT a
@@ -120,22 +129,50 @@ FEELER_RANGE = 6.0  # max sensing distance to an obstacle SURFACE; beyond -> 0
 FEELER_HALF_ANGLE_DEG = 100.0  # forward field half-angle; obstacles outside -> ignored
 OBSTACLE_RADIUS = 2.0  # default physical radius of an obstacle cylinder (world units)
 OBSTACLE_HEIGHT = 3.0  # full height of the cylinder (tall enough the fly can't climb over)
-# Contact-solver cap for obstacle envs ONLY. A fly that gets pinned against a
-# physical obstacle generates a large contact set; MuJoCo's default Newton solver
-# then does a dense Cholesky factorization per iteration for up to 100 iterations,
-# which can blow a single rollout from ~2 s to ~40 s and stall the whole evolution.
-# Keeping the Newton solver (so the contact dynamics — and the calibrated feeler
-# cue signs / collision headroom — are preserved) but capping the iteration count
-# bounds the per-step cost: worst-case rollout drops to ~7 s with the warm-start
-# cue signs unchanged. Applied ONLY when obstacles are present, so chemo/loom/
-# closed-loop/v1 physics (no obstacles) are byte-for-byte unchanged.
-OBSTACLE_SOLVER = 2  # mujoco.mjtSolver.mjSOL_NEWTON (the default; we only cap iterations)
-OBSTACLE_SOLVER_ITERATIONS = 20
-OBSTACLE_SOLVER_LS_ITERATIONS = 10
-# The fly is "in contact" with an obstacle when its thorax is within this
-# distance of the obstacle SURFACE (center distance - radius). Used for the
-# collision count / time-in-contact penalty; the physical geom does the actual
-# blocking. Roughly the fly's body half-length so pressing against a wall counts.
+
+# Contact-pair parameters for the fly<->obstacle <pair> elements (see
+# _add_obstacles). MuJoCo needs a 5-tuple friction (2 sliding, 1 torsional, 2
+# rolling), a 2-tuple solref (timeconst, dampratio), and a solimp for each pair.
+# Starting point: FlyGym's ground contact (ContactParams(): solref=(2e-4, 1.0),
+# solimp=(0.98, 0.99, 0.5, 3.0), margin=1e-3). The lateral slam of a fly into a
+# vertical post is a harsher regime than feet on the floor, so these are modestly
+# stiffer (faster solref timeconst, higher impedance floor, larger margin).
+# HONESTY (measured — scratch/nrlphys/REPORT_phys.md, Gates 1-2): the ground
+# defaults ALSO block cleanly with NO tunneling/instability across the whole
+# realistic envelope; stiffening was precautionary, not required — it only
+# marginally lowers an already-small post-contact rebound (~0.05 vs ~0.11 units at
+# the gait's ~118 u/s peak speed) and adds anti-tunnel margin, at no measured cost.
+# Both pass; these values were kept for the marginally cleaner stop.
+OBSTACLE_FRICTION = (1.0, 1.0, 0.02, 1e-4, 1e-4)  # = FlyGym ground friction
+OBSTACLE_SOLREF = (4e-4, 1.0)  # timeconst, dampratio (critically damped)
+OBSTACLE_SOLIMP = (0.99, 0.999, 0.5, 2.0)  # (dmin, dmax, width-mid, sharpness)
+OBSTACLE_MARGIN = 5e-3  # start contact force this far out (anti-tunnel headroom)
+
+# Contact solver for obstacle envs ONLY: the CG solver (no dense Cholesky), as
+# bounded insurance against a large contact set. The rationale is that a pinned
+# fly (now that obstacles are physical — see PHYSICAL BLOCKING above) could grow a
+# contact set that makes MuJoCo's default Newton solver's per-iteration dense
+# Cholesky expensive; CG has no Cholesky, so its per-step cost is bounded by the
+# iteration cap regardless of contact-set size or thread count.
+# HONESTY (measured — scratch/nrlphys/REPORT_phys.md, Gate 3): with real contacts
+# the fly's contact set stayed SMALL even in the worst cases tried (a sustained
+# pin, an 8-post cage, flailing legs: ncon_peak <= ~23), and at that size uncapped
+# Newton was actually ~1.2-1.9x FASTER than CG — the cap was NOT a measured
+# necessity and may mildly cost throughput. The old N-A "Newton blows ~2s -> ~40s"
+# numbers came from the NON-physical regime (no fly<->obstacle contacts ever
+# existed) and were not reproduced. The cap is retained per the N-RL-PHYS brief
+# (cheap, bounded, and changing the solver would alter obstacle-env contact
+# resolution); wave-2 should re-benchmark on real candidates and may drop it.
+# Applied ONLY when obstacles are present, so chemo/loom/closed-loop/v1 physics
+# (no obstacles) are byte-for-byte unchanged and the no-obstacle A/B stays exact.
+OBSTACLE_SOLVER = 1  # mujoco.mjtSolver.mjSOL_CG (no dense Cholesky; cost-bounded)
+OBSTACLE_SOLVER_ITERATIONS = 30
+OBSTACLE_SOLVER_LS_ITERATIONS = 20
+# Legacy geometric clearance: the thorax-to-surface distance (center distance -
+# radius) below which the old N-A run counted a "collision". It is NO LONGER the
+# collision metric — collision_count now counts control steps with a real MuJoCo
+# fly<->obstacle contact (see FlyEnv._obstacle_contact_active). Retained only as a
+# secondary geometric-shaping reference and logged via obstacle_min_surface.
 OBSTACLE_CONTACT_CLEARANCE = 1.0
 
 
@@ -216,14 +253,18 @@ def _build_default_world(
     world = FlatGroundWorld()
     if uneven_ground:
         _add_pebbles(world, terrain_seed)
-    if obstacles is not None and obstacles.centers:
-        _add_obstacles(world, obstacles)
     world.add_fly(
         fly,
         spawn_position=(0.0, 0.0, 0.7),
         spawn_rotation=Rotation3D("quat", (1.0, 0.0, 0.0, 0.0)),
         bodysegs_with_ground_contact=ContactBodiesPreset.LEGS_THORAX_ABDOMEN_HEAD,
     )
+    # Obstacles are added AFTER the fly so the fly geoms exist to pair against
+    # (the cylinder is solid only via explicit fly<->obstacle contact pairs).
+    # Gated on obstacles present -> the no-obstacle world is byte-for-byte the
+    # same model as before this change.
+    if obstacles is not None and obstacles.centers:
+        _add_obstacles(world, fly, obstacles)
     return world
 
 
@@ -263,19 +304,33 @@ def _add_pebbles(
             )
 
 
-def _add_obstacles(world: FlatGroundWorld, obstacles: "ObstacleField") -> None:
+def _add_obstacles(
+    world: FlatGroundWorld, fly: Fly, obstacles: "ObstacleField"
+) -> None:
     """Inject physical vertical-cylinder obstacles into the world.
 
-    Each obstacle is a collidable cylinder of radius ``obstacles.radius`` and
-    height ``OBSTACLE_HEIGHT``, standing on the floor at its world ``(x, y)``.
-    These are real MuJoCo geoms with default contact settings (like the pebbles),
-    so the fly actually collides with them; the matching ``ObstacleField`` on the
-    env senses them via the feelers.
+    Each obstacle is a cylinder of radius ``obstacles.radius`` and height
+    ``OBSTACLE_HEIGHT``, standing on the floor at its world ``(x, y)``.
+
+    A bare geom is NOT collidable with the fly: FlyGym builds every fly geom with
+    ``contype=conaffinity=0`` and enables collisions only via explicit ``<pair>``
+    elements. So, mirroring ``world.py::_set_ground_contact`` (which pairs each
+    contact body segment with the ground), this adds an explicit contact pair from
+    every fly contact-body geom (the ``LEGS_THORAX_ABDOMEN_HEAD`` set — legs,
+    thorax, abdomen, head) to each obstacle cylinder. Those pairs are what make the
+    obstacle a solid post the fly physically stops against; the matching
+    ``ObstacleField`` on the env additionally senses it via the feelers.
+
+    Must be called AFTER ``world.add_fly`` so the fly geoms exist to reference.
+    The pair stiffness/friction come from the ``OBSTACLE_*`` contact constants.
     """
     wb = world.mjcf_root.worldbody
     half_h = 0.5 * OBSTACLE_HEIGHT
+    contact_segments = (
+        ContactBodiesPreset.LEGS_THORAX_ABDOMEN_HEAD.to_body_segments_list()
+    )
     for i, (cx, cy) in enumerate(obstacles.centers):
-        wb.add(
+        obstacle_geom = wb.add(
             "geom",
             name=f"obstacle_{i}",
             type="cylinder",
@@ -283,6 +338,22 @@ def _add_obstacles(world: FlatGroundWorld, obstacles: "ObstacleField") -> None:
             pos=[float(cx), float(cy), half_h],  # base on the floor
             rgba=[0.35, 0.30, 0.45, 1.0],
         )
+        # One fly-geom <-> obstacle contact pair per contact body segment,
+        # mirroring _set_ground_contact (geom1=fly segment, geom2=obstacle).
+        for seg in contact_segments:
+            body_geom = fly.mjcf_root.find("geom", seg.name)
+            if body_geom is None:
+                continue
+            world.mjcf_root.contact.add(
+                "pair",
+                geom1=body_geom,
+                geom2=obstacle_geom,
+                name=f"{seg.name}-obstacle_{i}",
+                friction=OBSTACLE_FRICTION,
+                solref=OBSTACLE_SOLREF,
+                solimp=OBSTACLE_SOLIMP,
+                margin=OBSTACLE_MARGIN,
+            )
 
 
 @dataclass
@@ -422,11 +493,30 @@ class FlyEnv:
         # Obstacle envs only: cap the contact-constraint solver so a pinned fly
         # cannot blow up per-step cost (see OBSTACLE_SOLVER constants). opt is read
         # live by mj_step, so setting it on the compiled model takes effect.
+        # Obstacle geom-id sets for the real-contact collision metric. Resolved
+        # only when obstacles are present (empty otherwise -> the no-obstacle path
+        # never touches these and stays byte-exact). A fly<->obstacle contact is a
+        # MuJoCo contact whose two geoms intersect both sets (obstacle x fly).
+        self._obstacle_geom_ids: set[int] = set()
+        self._fly_contact_geom_ids: set[int] = set()
         if obstacles is not None and obstacles.centers:
             opt = self.sim.mj_model.opt
             opt.solver = OBSTACLE_SOLVER
             opt.iterations = OBSTACLE_SOLVER_ITERATIONS
             opt.ls_iterations = OBSTACLE_SOLVER_LS_ITERATIONS
+            m = self.sim.mj_model
+            for i in range(len(obstacles.centers)):
+                gid = mujoco.mj_name2id(
+                    m, mujoco.mjtObj.mjOBJ_GEOM, f"obstacle_{i}"
+                )
+                if gid >= 0:
+                    self._obstacle_geom_ids.add(gid)
+            for seg in ContactBodiesPreset.LEGS_THORAX_ABDOMEN_HEAD.to_body_segments_list():
+                gid = mujoco.mj_name2id(
+                    m, mujoco.mjtObj.mjOBJ_GEOM, f"{FLY_NAME}/{seg.name}"
+                )
+                if gid >= 0:
+                    self._fly_contact_geom_ids.add(gid)
         if renderer_camera is not None:
             self.sim.set_renderer(
                 renderer_camera,
@@ -717,6 +807,31 @@ class FlyEnv:
         s = float(np.sin(phi[nearest]))
         return prox * 0.5 * (1.0 + s), prox * 0.5 * (1.0 - s)
 
+    def _obstacle_contact_active(self) -> bool:
+        """True if MuJoCo currently has an active fly<->obstacle contact.
+
+        Scans ``mj_data.contact[:ncon]`` for a contact whose two geoms are one
+        obstacle geom and one fly contact-body geom (the explicit pairs added in
+        ``_add_obstacles``). This is the real physical-blocking signal that
+        replaced the old geometric thorax-to-surface clearance test. Returns False
+        when there are no obstacles (the id sets are empty).
+        """
+        if not self._obstacle_geom_ids:
+            return False
+        data = self.sim.mj_data
+        ncon = int(data.ncon)
+        obs_ids = self._obstacle_geom_ids
+        fly_ids = self._fly_contact_geom_ids
+        for i in range(ncon):
+            c = data.contact[i]
+            g1 = int(c.geom1)
+            g2 = int(c.geom2)
+            if (g1 in obs_ids and g2 in fly_ids) or (
+                g2 in obs_ids and g1 in fly_ids
+            ):
+                return True
+        return False
+
     def _obs(self) -> dict:
         return {"thorax_xyz": self._thorax_xyz(), "time": float(self.sim.time)}
 
@@ -813,6 +928,7 @@ class FlyEnv:
         threat_log: list = []  # threat xy (or None before onset) per step
         threat_dist_log: list[float] = []  # fly<->threat distance per step
         feeler_log: list[tuple[float, float]] = []  # (feeler_L, feeler_R) per step
+        contact_log: list[bool] = []  # real fly<->obstacle contact, per control step
 
         for t in range(n_steps):
             if pass_sensors:
@@ -841,6 +957,11 @@ class FlyEnv:
             else:
                 targets = np.asarray(policy(t), dtype=np.float64).reshape(-1)
             obs, reward, done, _ = self.step(targets)
+            # Real-contact collision metric: record whether this control step ends
+            # with an active fly<->obstacle MuJoCo contact. Gated on obstacle geoms
+            # so the no-obstacle path is unchanged (the id set is empty otherwise).
+            if self._obstacle_geom_ids:
+                contact_log.append(self._obstacle_contact_active())
             thorax_log.append(obs["thorax_xyz"].copy())
             targets_log.append(targets.copy())
             below_log.append(reward.below_threshold)
@@ -897,9 +1018,12 @@ class FlyEnv:
             threat_path = None
             threat_meta = None
 
-        # Navigation bookkeeping: per-step feeler log, collision count
-        # (time-in-contact: steps the thorax is within the contact clearance of
-        # an obstacle surface), and the closest approach to any obstacle.
+        # Navigation bookkeeping: per-step feeler log, collision count, and the
+        # closest approach to any obstacle. ``collision_count`` is now the number
+        # of control steps that ended with a REAL fly<->obstacle MuJoCo contact
+        # (physical blocking), not the old geometric thorax-to-surface clearance
+        # test. ``obstacle_min_surface`` keeps the geometric closest-approach as a
+        # secondary diagnostic / shaping term.
         if self._obstacles is not None and self._obstacles.centers:
             feeler_arr = (
                 np.asarray(feeler_log, dtype=np.float64) if feeler_log else np.zeros((0, 2))
@@ -908,15 +1032,15 @@ class FlyEnv:
             surf = np.array(
                 [self._obstacles.min_surface_distance(p) for p in post], dtype=np.float64
             )
-            in_contact = surf < OBSTACLE_CONTACT_CLEARANCE
-            collision_count = int(in_contact.sum())
+            collision_count = int(sum(contact_log))
             collided = bool(collision_count > 0)
             obstacle_min_surface = float(surf.min()) if surf.size else float("inf")
             obstacle_meta = {
                 "centers": [[float(x), float(y)] for (x, y) in self._obstacles.centers],
                 "radius": float(self._obstacles.radius),
                 "feeler_range": float(self._feeler_range),
-                "contact_clearance": float(OBSTACLE_CONTACT_CLEARANCE),
+                "collision_metric": "real_contact",
+                "contact_clearance": float(OBSTACLE_CONTACT_CLEARANCE),  # legacy geometric ref
             }
         else:
             feeler_arr = np.zeros((0, 2))

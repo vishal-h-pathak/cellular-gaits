@@ -1,5 +1,31 @@
 # REPORT — N-A · Obstacle navigation: calibration gate
 Validation-first calibration for the navigation behavior (feelers + arena + seek-vs-avoid). The full evolution has **NOT** been launched.
+
+> ## ⚠️ CORRECTION (2026-06-22, from N-RL-PHYS) — the N-A obstacles below were NOT physical
+> A later code investigation (N-RL-PHYS) proved that the obstacles in **this** N-A run
+> were **sensed-only, not physical**. FlyGym builds every fly geom with
+> `contype=conaffinity=0` and enables collisions ONLY via explicit `<pair>` elements;
+> N-A's `_add_obstacles` added a bare cylinder geom with **no contact pair**, so MuJoCo
+> never generated a fly↔obstacle contact and **the fly walked through every post**.
+> Consequences for the record below — left intact, not overwritten, for honesty:
+> - The N-A **`collision_count` was a GEOMETRIC** thorax-to-surface clearance count
+>   (steps with center-distance − radius < `OBSTACLE_CONTACT_CLEARANCE`=1.0), **not real
+>   contact**. The Gate-2 counts (~100+/episode) measure how deep the thorax passed
+>   *through* the post, not how long it pressed *against* one.
+> - The **"pinned fly → Newton dense-Cholesky → ~2 s→~40 s blow-up → CG cap → ~7 s"**
+>   rationale describes physics that **never happened in this run**: with zero fly↔obstacle
+>   contacts there was no pin and no large contact set, so those timings did not come from
+>   real pins. (The cap was still harmless and obstacles-only.)
+> - The feeler sensing, A/B bit-exactness (Gate 1), and parallel determinism (Gate 3)
+>   are **unaffected** — they never depended on physical contact.
+>
+> **Fixed in N-RL-PHYS** (`feat/n-rl-navigation`): real fly-geom↔obstacle contact pairs
+> (mirroring FlyGym's `_set_ground_contact`), a real-contact collision metric, and the cap
+> re-measured. With **real** contacts the fly is genuinely blocked and the per-episode
+> collision counts are an order of magnitude smaller (~**11–28**, vs N-A's geometric counts
+> of ~100+ steps/episode), so **`w_collide` must be recalibrated** against the real numbers.
+> Full physics validation: `scratch/nrlphys/REPORT_phys.md`.
+
 ## The four gates
 ### ✅ Gate 1 — warm-start still walks + homes (A/B bit-exact)
 - NCA-level feeler-zeroed `nav` vs 8-input `chemo` forward pass: max|Δ| = `0.00e+00`
