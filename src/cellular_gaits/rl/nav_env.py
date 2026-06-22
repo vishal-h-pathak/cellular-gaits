@@ -67,6 +67,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import gymnasium as gym
+import mujoco
 import numpy as np
 
 from ..env import (
@@ -143,6 +144,17 @@ class NavRLConfig:
     # full non-reaching episode. Encourages reaching sooner.
     step_cost: float = 0.004
     reach_bonus: float = 8.0  # paid once on collision-free arrival
+
+    # --- solver cap (obstacle envs only) ---
+    # FlyEnv.__init__ caps the contact solver to CG (iters 30 / ls 20) whenever
+    # obstacles are present (OBSTACLE_SOLVER*). With real fly<->obstacle contacts
+    # the contact set stays small (ncon_peak <= ~23, see scratch/nrlphys gate 3)
+    # and uncapped Newton was measured FASTER, so the cap is a harmless safety
+    # belt that may cost throughput. ``drop_solver_cap=True`` restores MuJoCo's
+    # default Newton solver (the same values the no-obstacle / chemo / loom path
+    # uses, so dropping it does NOT change those byte-exact paths) for the N-RL
+    # calibration; default False keeps the prior obstacle-env physics bit-exact.
+    drop_solver_cap: bool = False
 
 
 def _params_too_close(p: dict, h: dict, cfg: NavRLConfig) -> bool:
@@ -255,7 +267,16 @@ class NavRLEnv(EmbodiedRLEnv):
             antenna_forward=cfg.antenna_forward,
             antenna_lateral=cfg.antenna_lateral,
         )
-        # Obstacles present -> FlyEnv.__init__ already applied the Newton cap.
+        # Obstacles present -> FlyEnv.__init__ already applied the CG contact-solver
+        # cap. Optionally drop it back to MuJoCo's default Newton solver (matching the
+        # no-obstacle path exactly) for the calibration; Gate 1 then asserts ncon stays
+        # bounded so any real instability is still caught. ``opt`` is read live by
+        # mj_step, so setting it on the compiled model takes effect immediately.
+        if cfg.drop_solver_cap and fly._obstacle_geom_ids:
+            opt = fly.sim.mj_model.opt
+            opt.solver = int(mujoco.mjtSolver.mjSOL_NEWTON)
+            opt.iterations = 100
+            opt.ls_iterations = 50
         fly.set_odor(OdorField(source_xy=layout["goal_xy"], lam=cfg.odor_lambda))
         return fly
 

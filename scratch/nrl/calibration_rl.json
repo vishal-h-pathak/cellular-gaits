@@ -1,0 +1,214 @@
+{
+  "config": {
+    "w_collide": 0.75,
+    "drop_solver_cap": true,
+    "bearing_deg_range": [
+      20.0,
+      60.0
+    ],
+    "obstacle_frac_range": [
+      0.3,
+      0.55
+    ],
+    "obstacle_lateral_range": [
+      0.8,
+      1.5
+    ],
+    "obstacle_radius_range": [
+      1.6,
+      2.4
+    ],
+    "reach_bonus": 8.0,
+    "step_cost": 0.004,
+    "held_out_n": 8,
+    "max_episode_steps": 1000
+  },
+  "gate1_env_sanity": {
+    "shapes_ok": true,
+    "cap_dropped": true,
+    "solver": 2,
+    "iterations": 100,
+    "ncon_peak": 21,
+    "ncon_bounded": true,
+    "rollout_steps": 729,
+    "obs_in_space_every_step": true,
+    "vec_reset_match": true,
+    "vec_max_abs_diff": 0.0,
+    "n_envs": 16,
+    "parallel_steps_per_s": 1807.5491261236812,
+    "sequential_steps_per_s": 238.08071233820365,
+    "speedup": 7.5921695141603145,
+    "reset_ms": 461.7290989999674
+  },
+  "gate2_na_baseline": {
+    "aggregate": {
+      "detour_success_rate": 0.375,
+      "clean_reach_rate": 0.625,
+      "reach_rate": 0.625,
+      "avoid_rate": 0.875,
+      "detour_correct_rate": 0.5,
+      "mean_collisions": 119.75,
+      "mean_min_dist": 3.86299044944744,
+      "n_episodes": 8,
+      "source": "outputs/web_data_n/navigation_controller.json"
+    },
+    "rows": [
+      {
+        "bearing_deg": 32.65192249336975,
+        "block_side": -1.0,
+        "reached": false,
+        "collision_count": 0,
+        "avoided": true,
+        "detour_perp": -3.7219832918576445,
+        "detour_correct": false,
+        "detour_success": false,
+        "clean_reach": false,
+        "min_dist": 4.985058004674481,
+        "steps": 121
+      },
+      {
+        "bearing_deg": 55.89440764428873,
+        "block_side": 1.0,
+        "reached": true,
+        "collision_count": 0,
+        "avoided": true,
+        "detour_perp": -3.3992199875589977,
+        "detour_correct": true,
+        "detour_success": true,
+        "clean_reach": true,
+        "min_dist": 2.9741277818617626,
+        "steps": 147
+      },
+      {
+        "bearing_deg": 23.470692442859622,
+        "block_side": 1.0,
+        "reached": false,
+        "collision_count": 0,
+        "avoided": true,
+        "detour_perp": -1.2622034936992579,
+        "detour_correct": true,
+        "detour_success": false,
+        "clean_reach": false,
+        "min_dist": 3.5317130114645163,
+        "steps": 1000
+      },
+      {
+        "bearing_deg": 23.068722936602043,
+        "block_side": -1.0,
+        "reached": false,
+        "collision_count": 958,
+        "avoided": false,
+        "detour_perp": -2.63000087455855,
+        "detour_correct": false,
+        "detour_success": false,
+        "clean_reach": false,
+        "min_dist": 7.648354337372784,
+        "steps": 1000
+      },
+      {
+        "bearing_deg": 34.816488658145175,
+        "block_side": 1.0,
+        "reached": true,
+        "collision_count": 0,
+        "avoided": true,
+        "detour_perp": -2.621251044973428,
+        "detour_correct": true,
+        "detour_success": true,
+        "clean_reach": true,
+        "min_dist": 2.98275400679103,
+        "steps": 637
+      },
+      {
+        "bearing_deg": 41.2803576615905,
+        "block_side": -1.0,
+        "reached": true,
+        "collision_count": 0,
+        "avoided": true,
+        "detour_perp": 1.589107175366049,
+        "detour_correct": true,
+        "detour_success": true,
+        "clean_reach": true,
+        "min_dist": 2.925082040603301,
+        "steps": 970
+      },
+      {
+        "bearing_deg": 54.0396634598685,
+        "block_side": 1.0,
+        "reached": true,
+        "collision_count": 0,
+        "avoided": true,
+        "detour_perp": 0.0,
+        "detour_correct": false,
+        "detour_success": false,
+        "clean_reach": true,
+        "min_dist": 2.9273534358337225,
+        "steps": 156
+      },
+      {
+        "bearing_deg": 44.92769142617319,
+        "block_side": -1.0,
+        "reached": true,
+        "collision_count": 0,
+        "avoided": true,
+        "detour_perp": -3.5757749691536884,
+        "detour_correct": false,
+        "detour_success": false,
+        "clean_reach": true,
+        "min_dist": 2.9294809769779224,
+        "steps": 389
+      }
+    ]
+  },
+  "gate3_ab_integrity": {
+    "feeler_off_max_abs_delta": 0.0,
+    "feeler_on_max_abs_delta": 0.0,
+    "chemo_params": 1236,
+    "nav_params": 1524,
+    "ab_bit_exact": true
+  },
+  "gate4_short_ppo": {
+    "pre": {
+      "detour_success_rate": 0.125,
+      "clean_reach_rate": 0.0,
+      "reach_rate": 0.25,
+      "avoid_rate": 0.5,
+      "detour_correct_rate": 0.875,
+      "mean_collisions": 48.25,
+      "mean_min_dist": 9.400255074673742,
+      "n_episodes": 8
+    },
+    "post": {
+      "detour_success_rate": 0.0,
+      "clean_reach_rate": 0.0,
+      "reach_rate": 0.0,
+      "avoid_rate": 1.0,
+      "detour_correct_rate": 0.5,
+      "mean_collisions": 0.0,
+      "mean_min_dist": 11.231383922080404,
+      "n_episodes": 8
+    },
+    "na_baseline": {
+      "detour_success_rate": 0.375,
+      "clean_reach_rate": 0.625,
+      "reach_rate": 0.625,
+      "avoid_rate": 0.875,
+      "detour_correct_rate": 0.5,
+      "mean_collisions": 119.75,
+      "mean_min_dist": 3.86299044944744,
+      "n_episodes": 8,
+      "source": "outputs/web_data_n/navigation_controller.json"
+    },
+    "wall_s": 620.0781450200002,
+    "num_updates": 6,
+    "config": {
+      "total_steps": 48000,
+      "n_envs": 16,
+      "n_steps": 500,
+      "n_minibatch": 20,
+      "update_epochs": 4,
+      "learning_rate": 0.0003,
+      "ent_coef": 0.0
+    },
+    "generalization_signal": false
+  }
+}
