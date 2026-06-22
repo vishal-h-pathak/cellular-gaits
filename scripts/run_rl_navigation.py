@@ -81,6 +81,14 @@ FEELER_HOT = 0.1               # feeler L+R above this == "near the obstacle" (m
 # single-step brush, distinct from clean_reach's strict zero. Gating reconciles Gate 2:
 # N-A "succeeded" by grazing through (119.8 contacts/ep); under the gate it reads ~0.
 GATE_TAU = 2                   # max in-contact steps for a "clean" (collision-gated) reach/detour
+# 2c: the outer edge of the forager's homing cone. Gate 2 showed the CMA-ES forager
+# clean-reaches bearings ~35-56° and falls off beyond that, so 60° is the boundary
+# between "inside the cone" (where N-A is already competent — RL proves nothing) and
+# "outside" (the omnidirectional generalization the curriculum must win). The held-out
+# clean_reach is split on this so the LEADING EDGE (does reach extend past the cone?)
+# is visible. Bearings are folded to (-180, 180] before the test so the omnidirectional
+# full-run held-out buckets correctly (a 350° goal is a -10° goal = inside).
+FORAGER_CONE_DEG = 60.0
 
 NA_CONTROLLER_JSON = ROOT / "outputs" / "web_data_n" / "navigation_controller.json"
 NA_CHECKPOINT = ROOT / "checkpoints" / "2026-06-21T05-22-48Z" / "gen_70.npz"
@@ -89,6 +97,8 @@ REPORT = ROOT / "ops" / "reports" / "REPORT_n_rl_calibration.md"
 # Sentinel delimiting the appended Rebalance-pass section so re-runs replace it
 # idempotently instead of stacking duplicates (the v1 report above it is preserved).
 REBALANCE_MARKER = "<!-- REBALANCE_2B_START -->"
+# 2c appends AFTER the preserved 2b section; re-runs replace from here on idempotently.
+CURRICULUM_MARKER = "<!-- CURRICULUM_2C_START -->"
 
 
 class _Tee:
@@ -145,6 +155,31 @@ def load_na_policy(cfg: NavRLConfig, source: Path = NA_CONTROLLER_JSON) -> tuple
 # --------------------------------------------------------------------------- #
 # Held-out evaluation (the yardstick vs N-A)
 # --------------------------------------------------------------------------- #
+def _bearing_split(rows: list[dict]) -> dict:
+    """Split held-out rows into inside/outside the forager's cone and report the
+    un-gameable bars (clean_reach, raw reach) per bucket. The OUTSIDE bucket is the
+    omnidirectional frontier the curriculum must win; its clean_reach moving pre->post
+    is the leading indicator for the full run (see ``FORAGER_CONE_DEG``)."""
+    def fold(b: float) -> float:
+        return ((b + 180.0) % 360.0) - 180.0
+
+    inside = [r for r in rows if abs(fold(r["bearing_deg"])) <= FORAGER_CONE_DEG]
+    outside = [r for r in rows if abs(fold(r["bearing_deg"])) > FORAGER_CONE_DEG]
+
+    def mean(rs: list[dict], key: str) -> float:
+        return float(np.mean([r[key] for r in rs])) if rs else float("nan")
+
+    return {
+        "cone_deg": FORAGER_CONE_DEG,
+        "inside_n": len(inside),
+        "outside_n": len(outside),
+        "inside_clean_reach": mean(inside, "clean_reach"),
+        "outside_clean_reach": mean(outside, "clean_reach"),
+        "inside_reach": mean(inside, "reached"),
+        "outside_reach": mean(outside, "reached"),
+    }
+
+
 def evaluate_policy(
     policy: NCAPolicy,
     cfg: NavRLConfig,
@@ -266,6 +301,10 @@ def evaluate_policy(
         "mean_collisions": float(np.mean([r["collision_count"] for r in rows])),
         "mean_min_dist": float(np.mean([r["min_dist"] for r in rows])),
         "gate_tau": GATE_TAU,
+        # 2c: held-out split by bearing bucket (inside vs outside the forager's cone).
+        # The leading indicator for the full run — clean_reach trending up on the
+        # OUTSIDE bucket = the curriculum is dissolving the narrow-cone overfit.
+        "split": _bearing_split(rows),
         # 2b reward decomposition (per-episode means under the live cfg weights).
         "decomp": {
             "r_approach": float(np.mean([r["r_approach"] for r in rows])),
@@ -295,6 +334,56 @@ def make_eval_fn(cfg: NavRLConfig, n_episodes: int | None = None, device: str = 
         return out["aggregate"]
 
     return eval_fn
+
+
+# --------------------------------------------------------------------------- #
+# Gate 0 — curriculum self-check (the 2c levers + default-off bit-exactness)
+# --------------------------------------------------------------------------- #
+def gate0_curriculum_selfcheck(cfg: NavRLConfig) -> dict:
+    """Validate the four wired 2c levers without spending PPO budget.
+
+    (a) Default-OFF must be a no-op: a fresh ``NavRLConfig()`` env's schedules return
+        the base values (so 2b stays bit-exact — Gate 3 / prior behavior preserved).
+    (b) Curriculum-ON sweeps as configured: the bearing band widens to omnidirectional
+        over ``bearing_widen_frac``, ``w_collide`` anneals base->max over its window,
+        and the obstacle slides from off-path (extra lateral) onto the path.
+    """
+    print("\n[gate0] curriculum self-check: schedules + default-off bit-exactness ...")
+    off = NavRLEnv(NavRLConfig())
+    off_exact = bool(
+        off.effective_w_collide() == off.cfg.w_collide
+        and tuple(off._train_bearing_range(0.5)) == tuple(off.cfg.bearing_deg_range)
+        and off._apply_obstacle_curriculum({"lateral": 1.0}, 0.0)["lateral"] == 1.0
+    )
+
+    on = NavRLEnv(NavRLConfig(
+        curriculum=True, curriculum_horizon_steps=1000,
+        bearing_deg_range=(20.0, 60.0), bearing_deg_target=(0.0, 360.0),
+        bearing_widen_frac=0.6, w_collide=0.25, w_collide_max=0.75,
+        w_collide_anneal_start=0.2, w_collide_anneal_end=0.7,
+        obstacle_far_extra_lateral=2.0, obstacle_near_frac=0.5,
+    ))
+    bands = {p: tuple(round(x, 1) for x in on._train_bearing_range(p))
+             for p in (0.0, 0.3, 0.6, 1.0)}
+    wcol = {p: round(on.effective_w_collide(p), 3) for p in (0.0, 0.2, 0.45, 0.7, 1.0)}
+    lat = {p: round(on._apply_obstacle_curriculum({"lateral": 1.0}, p)["lateral"], 2)
+           for p in (0.0, 0.25, 0.5)}
+
+    widened = bands[0.0] == (20.0, 60.0) and bands[0.6] == (0.0, 360.0)
+    annealed = wcol[0.0] == 0.25 and wcol[1.0] == 0.75 and 0.25 < wcol[0.45] < 0.75
+    slid = lat[0.0] > lat[0.5] and lat[0.5] == 1.0
+    ok = bool(off_exact and widened and annealed and slid)
+
+    print(f"[gate0] default-off bit-exact={off_exact}  band 0->.6={bands[0.0]}->{bands[0.6]}  "
+          f"w_collide 0->1={wcol[0.0]}->{wcol[1.0]} (mid {wcol[0.45]})  "
+          f"obstacle lat 0->.5={lat[0.0]}->{lat[0.5]}  pass={ok}")
+    return {
+        "off_bit_exact": off_exact,
+        "bands": {str(k): list(v) for k, v in bands.items()},
+        "w_collide": {str(k): v for k, v in wcol.items()},
+        "obstacle_lateral": {str(k): v for k, v in lat.items()},
+        "pass": ok,
+    }
 
 
 # --------------------------------------------------------------------------- #
@@ -556,11 +645,25 @@ def gate4_short_ppo(cfg: NavRLConfig, args, na_baseline: dict) -> dict:
 # Calibration driver + report
 # --------------------------------------------------------------------------- #
 def calibrate(args) -> None:
-    cfg = NavRLConfig(w_collide=args.w_collide, w_approach=args.w_approach, drop_solver_cap=True)
+    # 2c re-calibrates on a HARDER, wider band. Gate 2 (2a/2b) found the forager's
+    # ~40° cone band too easy, so this run uses a FIXED moderately-wide band
+    # [cal_bearing_lo, cal_bearing_hi] (inside + just-beyond the cone) with a matching
+    # widened held-out — the cleanest cheap test of "does clean_reach extend OUTSIDE
+    # the cone?". The progressive curriculum SCHEDULE (which compresses badly into a
+    # cheap budget) is exercised + validated by Gate 0 and baked into --full instead.
+    band = (args.cal_bearing_lo, args.cal_bearing_hi)
+    cfg = NavRLConfig(
+        w_collide=args.w_collide, w_approach=args.w_approach, drop_solver_cap=True,
+        bearing_deg_range=band, held_out_bearing_deg_range=band,
+        held_out_n=args.held_out_n,
+    )
+    print(f"[cal] 2c harder-band calibration: bearing_deg_range={cfg.bearing_deg_range} "
+          f"held_out_n={cfg.held_out_n}  forager_cone={FORAGER_CONE_DEG:.0f}° "
+          f"(fixed moderately-wide band; curriculum schedule validated by Gate 0 + baked into --full)")
     print(f"[cal] NavRLConfig: w_collide={cfg.w_collide} w_approach={cfg.w_approach} "
-          f"drop_solver_cap={cfg.drop_solver_cap} bearing_deg_range={cfg.bearing_deg_range} "
-          f"held_out_n={cfg.held_out_n} gate_tau={GATE_TAU}")
+          f"drop_solver_cap={cfg.drop_solver_cap} gate_tau={GATE_TAU}")
 
+    g0 = gate0_curriculum_selfcheck(cfg)
     g1 = gate1_env_sanity(cfg, n_envs=args.n_envs)
     g2 = gate2_na_baseline(cfg)
     g3 = gate3_ab_integrity(cfg)
@@ -572,6 +675,8 @@ def calibrate(args) -> None:
             "w_collide": cfg.w_collide, "w_approach": cfg.w_approach,
             "drop_solver_cap": cfg.drop_solver_cap,
             "bearing_deg_range": list(cfg.bearing_deg_range),
+            "held_out_bearing_deg_range": list(cfg.held_out_bearing_deg_range),
+            "forager_cone_deg": FORAGER_CONE_DEG,
             "obstacle_frac_range": list(cfg.obstacle_frac_range),
             "obstacle_lateral_range": list(cfg.obstacle_lateral_range),
             "obstacle_radius_range": list(cfg.obstacle_radius_range),
@@ -579,6 +684,7 @@ def calibrate(args) -> None:
             "gate_tau": GATE_TAU,
             "held_out_n": cfg.held_out_n, "max_episode_steps": cfg.max_episode_steps,
         },
+        "gate0_curriculum_selfcheck": g0,
         "gate1_env_sanity": g1,
         "gate2_na_baseline": g2,
         "gate3_ab_integrity": g3,
@@ -587,7 +693,7 @@ def calibrate(args) -> None:
     out = SCRATCH / "calibration_rl.json"
     out.write_text(json.dumps(payload, indent=2, default=float))
     print(f"\n[cal] wrote {out.relative_to(ROOT)}")
-    _append_rebalance_report(args, cfg, payload)
+    _append_curriculum_report(args, cfg, payload)
 
 
 def _fmt(x: float, nd: int = 2) -> str:
@@ -780,6 +886,249 @@ def _append_rebalance_report(args, cfg: NavRLConfig, p: dict) -> None:
     print(f"  Gate 3 (A/B bit-exact):                      {v3}")
     print(f"  Gate 4 (rebalance trend):                    {v4}")
     print(f"  episodic_return finite:                      {returns_finite}")
+    print("=" * 70)
+
+
+def _full_cmd(args) -> str:
+    """The proposed --full command with the curriculum / anneal / wide-band config baked in."""
+    return (
+        "uv run python scripts/run_rl_navigation.py --full "
+        f"--full-steps {args.full_steps} --full-n-envs {args.full_n_envs} "
+        f"--w-collide {args.w_collide} --w-approach {args.w_approach} "
+        f"--w-collide-max {args.w_collide_max} "
+        f"--w-collide-anneal-start {args.w_collide_anneal_start} "
+        f"--w-collide-anneal-end {args.w_collide_anneal_end} "
+        f"--bearing-lo {args.bearing_lo:g} --bearing-hi {args.bearing_hi:g} "
+        f"--bearing-target-lo {args.bearing_target_lo:g} --bearing-target-hi {args.bearing_target_hi:g} "
+        f"--bearing-widen-frac {args.bearing_widen_frac:g} "
+        f"--held-out-bearing-lo {args.held_out_bearing_lo:g} "
+        f"--held-out-bearing-hi {args.held_out_bearing_hi:g} --held-out-n {args.held_out_n} "
+        f"--obstacle-far-extra-lateral {args.obstacle_far_extra_lateral:g} "
+        f"--obstacle-near-frac {args.obstacle_near_frac:g}"
+    )
+
+
+def _split_line(label: str, na: dict, pre: dict, post: dict, key: str) -> str:
+    """One markdown table row for a split metric (inside/outside) across N-A/pre/post."""
+    return (f"| {label} | {_fmt(na[key])} | {_fmt(pre[key])} | {_fmt(post[key])} |\n")
+
+
+def _append_curriculum_report(args, cfg: NavRLConfig, p: dict) -> None:
+    """Append (idempotently) the 'Curriculum pass (2c)' section, preserving 2a + 2b.
+
+    2c wires the four levers (bearing curriculum, ``w_collide`` anneal, far→near
+    obstacle, widened/matching held-out) and re-calibrates on the HARDER band. The
+    headline is the held-out clean_reach split INSIDE vs OUTSIDE the forager's cone,
+    pre→post: an upward trend on the OUTSIDE bucket is the leading indicator that the
+    curriculum will keep extending the homing envelope under the full budget.
+    """
+    g0 = p["gate0_curriculum_selfcheck"]
+    g1 = p["gate1_env_sanity"]
+    g2 = p["gate2_na_baseline"]["aggregate"]
+    g3 = p["gate3_ab_integrity"]
+    g4 = p["gate4_short_ppo"]
+    pre, post, na = g4["pre"], g4["post"], g4["na_baseline"]
+    nas, pres, posts = na["split"], pre["split"], post["split"]
+    cone = nas["cone_deg"]
+
+    # Verdicts.
+    g0_pass = bool(g0["pass"] and g0["off_bit_exact"])
+    g1_pass = (g1["shapes_ok"] and g1["cap_dropped"] and g1["ncon_bounded"]
+               and g1["vec_reset_match"] and g1["vec_max_abs_diff"] == 0.0)
+    g3_pass = g3["ab_bit_exact"]
+    returns_finite = bool(g4.get("returns_finite", False))
+    # Gate 2 on the harder band: the widened held-out should now reach OUTSIDE the
+    # forager cone, so N-A's OUTSIDE clean_reach should be ~0 (band no longer too easy).
+    na_out = nas["outside_clean_reach"]
+    band_now_hard = (not np.isfinite(na_out)) or na_out <= 0.25
+
+    # The leading-edge signal: does post-PPO clean_reach (or raw reach) extend onto the
+    # OUTSIDE bucket relative to the warm-start pre?
+    def _up(a: float, b: float) -> bool:
+        return bool(np.isfinite(a) and np.isfinite(b) and b > a + 1e-9)
+    out_cr_moved = _up(pres["outside_clean_reach"], posts["outside_clean_reach"])
+    out_r_moved = _up(pres["outside_reach"], posts["outside_reach"])
+    leading_edge_moved = out_cr_moved or out_r_moved
+    # Dead-flat 0 outside (and no movement) is the documented no-go.
+    post_out_cr = posts["outside_clean_reach"]
+    post_out_r = posts["outside_reach"]
+    flat_zero_outside = (
+        (not np.isfinite(post_out_cr) or post_out_cr == 0.0)
+        and (not np.isfinite(post_out_r) or post_out_r == 0.0)
+        and not leading_edge_moved
+    )
+
+    v0 = "✅" if g0_pass else "❌"
+    v1 = "✅" if g1_pass else "❌"
+    v2 = "✅" if band_now_hard else "⚠️"  # ✅ = band is now genuinely hard (good for 2c)
+    v3 = "✅" if g3_pass else "❌"
+    v4 = "✅" if leading_edge_moved else ("⚠️" if not flat_zero_outside else "❌")
+
+    rc = g4.get("return_curve", [])
+    rc_str = ", ".join(_fmt(x) for x in rc) if rc else "(none captured)"
+    full_cmd = _full_cmd(args)
+    band = list(cfg.bearing_deg_range)
+    horizon = max(1, args.full_steps // max(1, args.full_n_envs))
+
+    L: list[str] = []
+    L.append(CURRICULUM_MARKER + "\n")
+    L.append("\n---\n\n## Curriculum pass (2c) — bearing curriculum + `w_collide` anneal + "
+             "far→near obstacle + widened held-out (re-calibrate on the harder band)\n")
+    L.append(
+        f"2b fixed the reward balance; its real finding was that the `[20–60°]` held-out band sits "
+        f"INSIDE the forager's ~40° homing cone (N-A clean-reaches {na['clean_reach_rate']:.0%} there), "
+        f"so beating N-A there proves nothing. 2c wires the four levers that drive the full run toward "
+        f"**omnidirectional** homing, then re-calibrates on a **harder, wider band** to confirm a "
+        f"learnable signal beyond the cone. All four levers are config-gated and **default OFF → 2b "
+        f"bit-exact** (Gate 0 + Gate 3). **The full run has NOT been launched.**\n"
+    )
+
+    L.append("\n### The four wired levers (schedules; Gate-0 validated)\n")
+    L.append(
+        f"1. **Progressive bearing curriculum** — the *training* band widens linearly from "
+        f"`bearing_deg_range` → `bearing_deg_target` over the first `bearing_widen_frac` of training, "
+        f"then holds. Full-run default: `[{args.bearing_lo:g}, {args.bearing_hi:g}]` → "
+        f"`[{args.bearing_target_lo:g}, {args.bearing_target_hi:g}]` over the first "
+        f"{args.bearing_widen_frac:g} of steps. **Schedule type: step-fraction** (progress = this "
+        f"env's cumulative train steps / `curriculum_horizon_steps`, the per-env budget "
+        f"`total_steps / n_envs`); not held-out-gated. Validated band sweep (20→omni example): "
+        f"`{g0['bands']['0.0']}`@0 → `{g0['bands']['0.3']}`@.3 → `{g0['bands']['0.6']}`@.6.\n"
+        f"2. **`w_collide` anneal** — ramps `{args.w_collide:g}` → `{args.w_collide_max:g}` over progress "
+        f"`[{args.w_collide_anneal_start:g}, {args.w_collide_anneal_end:g}]`, so homing is learned "
+        f"before avoidance tightens (defuses the 2a stall basin). Validated: "
+        f"{g0['w_collide']['0.0']} → {g0['w_collide']['0.45']} → {g0['w_collide']['1.0']} "
+        f"across progress 0/.45/1.\n"
+        f"3. **Far→near obstacle curriculum** — the obstacle starts `obstacle_far_extra_lateral`="
+        f"{args.obstacle_far_extra_lateral:g} world-units further OFF the path (straight line misses "
+        f"the disk → homing unobstructed), sliding onto the path over the first "
+        f"`obstacle_near_frac`={args.obstacle_near_frac:g} of progress. Validated lateral (base 1.0): "
+        f"{g0['obstacle_lateral']['0.0']}@0 → {g0['obstacle_lateral']['0.25']}@.25 → "
+        f"{g0['obstacle_lateral']['0.5']}@.5.\n"
+        f"4. **Widened + matching held-out** — the frozen held-out is drawn from "
+        f"`held_out_bearing_deg_range` (full run: `[{args.held_out_bearing_lo:g}, "
+        f"{args.held_out_bearing_hi:g}]`, omnidirectional), still rejection-sampled **disjoint** from "
+        f"training at every stage. Reported split by bearing below.\n"
+        f"\n- **Gate 0 (curriculum self-check): {v0}** — default-off bit-exact="
+        f"`{g0['off_bit_exact']}` (schedules collapse to base when off → 2b preserved); on-sweeps "
+        f"widen/anneal/slide as configured.\n"
+    )
+
+    L.append("\n### Re-calibration setup (the harder band)\n")
+    L.append(
+        f"- **Band:** fixed moderately-wide `[{band[0]:g}, {band[1]:g}]` for BOTH training and the "
+        f"matching frozen held-out (`held_out_n={cfg.held_out_n}`), rejection-disjoint. Chosen over a "
+        f"budget-compressed curriculum because a cheap run can't widen far enough to populate the "
+        f"outside bearings — a fixed wide band trains directly on them, the cleanest leading-edge "
+        f"test. The curriculum *schedule* itself is validated by Gate 0 and runs in `--full`.\n"
+        f"- **Budget:** `--cal-steps {g4['config']['total_steps']:,}`, `--n-envs "
+        f"{g4['config']['n_envs']}`, `n_steps={g4['config']['n_steps']}` → {g4['num_updates']} updates "
+        f"in {g4['wall_s']:.0f}s (larger than 2b's 48k because the wider task is harder). Reward "
+        f"balance held at the 2b optimum (`w_collide={cfg.w_collide:g}`, `w_approach={cfg.w_approach:g}`; "
+        f"anneal OFF for this cheap homing-first run).\n"
+        f"- **Split boundary:** `FORAGER_CONE_DEG={cone:.0f}°` — held-out bearings ≤{cone:.0f}° are "
+        f"INSIDE the forager's competence (Gate-2: clean ~35–56°), >{cone:.0f}° are the OUTSIDE "
+        f"frontier (≈60–90°, just beyond the cone) the curriculum must win.\n"
+    )
+
+    L.append("\n### Gate results (harder band)\n")
+    L.append(
+        "| gate | verdict | one-line |\n|---|---|---|\n"
+        f"| 0 curriculum self-check | {v0} | default-off bit-exact + on-sweeps validated |\n"
+        f"| 1 env sanity + ncon bounded | {v1} | ncon_peak={g1['ncon_peak']}≤{NCON_BOUND}, "
+        f"deterministic (max\\|Δ\\|={g1['vec_max_abs_diff']:.0e}), {g1['speedup']:.1f}× parallel |\n"
+        f"| 2 N-A on widened held-out | {v2} | N-A clean_reach OUTSIDE {cone:.0f}° = "
+        f"{_fmt(na_out)} → band is "
+        + ("now genuinely hard (good) |\n" if band_now_hard else "still too easy |\n")
+        + f"| 3 A/B bit-exact | {v3} | warm-start == chemo forward, max\\|Δ\\|="
+        f"{g3['feeler_off_max_abs_delta']:.0e} |\n"
+        f"| 4 leading edge (OUTSIDE clean_reach) | {v4} | "
+        + ("moves UP pre→post (curriculum will extend it) |\n" if leading_edge_moved
+           else ("non-zero but not yet rising — see diagnosis |\n" if not flat_zero_outside
+                 else "dead-flat 0 outside — no-go, diagnosed below |\n"))
+    )
+
+    L.append(f"\n### Held-out clean_reach split — INSIDE vs OUTSIDE the {cone:.0f}° cone (pre→post)\n")
+    L.append(
+        f"| metric | N-A | pre-PPO (warm start) | post-PPO |\n|---|---|---|---|\n"
+        + _split_line(f"clean_reach INSIDE ≤{cone:.0f}° (n={nas['inside_n']})",
+                      nas, pres, posts, "inside_clean_reach")
+        + _split_line(f"**clean_reach OUTSIDE >{cone:.0f}° (n={nas['outside_n']})**",
+                      nas, pres, posts, "outside_clean_reach")
+        + _split_line(f"reach (raw) INSIDE ≤{cone:.0f}°", nas, pres, posts, "inside_reach")
+        + _split_line(f"reach (raw) OUTSIDE >{cone:.0f}°", nas, pres, posts, "outside_reach")
+        + f"| clean_reach (all held-out) | {na['clean_reach_rate']:.2f} | "
+        f"{pre['clean_reach_rate']:.2f} | {post['clean_reach_rate']:.2f} |\n"
+        f"| mean_collisions | {na['mean_collisions']:.1f} | {pre['mean_collisions']:.1f} | "
+        f"{post['mean_collisions']:.1f} |\n\n"
+        f"The OUTSIDE bucket is the whole point: N-A clean-reaches {_fmt(nas['outside_clean_reach'])} "
+        f"there (the forager cannot home past its cone), so any upward pre→post movement is signal the "
+        f"narrow-cone overfit is dissolving.\n"
+        f"- **Return curve (finite):** `charts/episodic_return` = [{rc_str}] — "
+        f"{'finite across all logged updates.' if returns_finite else 'WARNING: non-finite/empty.'}\n"
+    )
+
+    L.append("\n### Verdict\n")
+    if leading_edge_moved:
+        L.append(
+            f"**Green — the leading edge moves.** Post-PPO clean_reach/raw-reach on the OUTSIDE "
+            f"(>{cone:.0f}°) bucket rises vs the warm-start pre (clean_reach "
+            f"{_fmt(pres['outside_clean_reach'])}→**{_fmt(posts['outside_clean_reach'])}**, raw reach "
+            f"{_fmt(pres['outside_reach'])}→**{_fmt(posts['outside_reach'])}**) while N-A sits at "
+            f"{_fmt(nas['outside_clean_reach'])}. Even at this cheap budget PPO is extending homing "
+            f"PAST the forager cone — exactly the leading indicator that the progressive curriculum "
+            f"will keep widening the envelope toward omnidirectional under the full budget. "
+            f"**Recommendation: launch the full run** with the curriculum/anneal/wide config baked in "
+            f"(below).\n"
+        )
+    elif not flat_zero_outside:
+        L.append(
+            f"**Amber — outside bearings are reachable but not yet rising at this "
+            f"{g4['config']['total_steps']:,}-step budget** (post OUTSIDE clean_reach "
+            f"{_fmt(posts['outside_clean_reach'])}, raw reach {_fmt(posts['outside_reach'])}; "
+            f"pre {_fmt(pres['outside_clean_reach'])}/{_fmt(pres['outside_reach'])}). There is a "
+            f"non-zero base to build on; the cheap budget (~{g4['num_updates']} updates) is likely too "
+            f"small to *show* the extension. The full curriculum (gradual widening from the cone, "
+            f"homing-first anneal, far→near obstacle) is the mechanism to grow it. **Recommendation: "
+            f"launch the full run**; the wide-band base is reachable.\n"
+        )
+    else:
+        L.append(
+            f"**Red — dead-flat 0 on the OUTSIDE bucket** (post clean_reach "
+            f"{_fmt(posts['outside_clean_reach'])}, raw reach {_fmt(posts['outside_reach'])}). The "
+            f"warm-start forager cannot home outside its cone and the cheap budget did not move it. "
+            f"Before the full run, diagnose: (a) the warm start is insufficient at wide bearings — add "
+            f"a **homing-only, obstacle-free warm-up phase** (curriculum stage 0: widen the bearing "
+            f"band with NO obstacle until outside-cone reach is non-zero, THEN slide the obstacle in); "
+            f"(b) raise `ent_coef` to force exploration past the cone; (c) widen more gradually. "
+            f"**Do NOT launch the full run yet** — the wide-band homing signal must be non-zero first.\n"
+        )
+
+    L.append("\n### Proposed full run (NOT launched — curriculum/anneal/wide baked in)\n")
+    L.append(
+        f"```\n{full_cmd}\n```\n"
+        f"- `--full` enables the curriculum by construction; `curriculum_horizon_steps` is set to "
+        f"`full_steps / full_n_envs` = {horizon:,} per-env steps, so each async env's progress tracks "
+        f"the global training fraction. Bearing widens "
+        f"`[{args.bearing_lo:g},{args.bearing_hi:g}]`→`[{args.bearing_target_lo:g},"
+        f"{args.bearing_target_hi:g}]`, `w_collide` anneals {args.w_collide:g}→{args.w_collide_max:g}, "
+        f"obstacle slides far→near, held-out is omnidirectional "
+        f"`[{args.held_out_bearing_lo:g},{args.held_out_bearing_hi:g}]` (n={args.held_out_n}).\n"
+        f"- Checkpointed every {args.ckpt_every} updates and resumable, so it can span sessions.\n"
+    )
+
+    # Append idempotently: keep everything before the 2c marker, replace the rest.
+    existing = REPORT.read_text() if REPORT.exists() else ""
+    base = existing.split(CURRICULUM_MARKER)[0].rstrip() + "\n"
+    REPORT.write_text(base + "\n" + "".join(L))
+    print(f"[cal] appended Curriculum pass (2c) to {REPORT.relative_to(ROOT)}")
+    print("\n" + "=" * 70)
+    print("N-RL CURRICULUM (2c) GATES:")
+    print(f"  Gate 0 (curriculum self-check / default-off):  {v0}")
+    print(f"  Gate 1 (env sanity + ncon bounded):            {v1}")
+    print(f"  Gate 2 (N-A baseline, band now hard):          {v2}")
+    print(f"  Gate 3 (A/B bit-exact):                        {v3}")
+    print(f"  Gate 4 (leading edge OUTSIDE cone moves):      {v4}")
+    print(f"  episodic_return finite:                        {returns_finite}")
     print("=" * 70)
 
 
@@ -1064,11 +1413,38 @@ def _write_report(args, cfg: NavRLConfig, p: dict) -> None:
 # --------------------------------------------------------------------------- #
 # Full run
 # --------------------------------------------------------------------------- #
+def build_full_cfg(args) -> NavRLConfig:
+    """The full-run config: the 2c curriculum ON, horizon = per-env step budget.
+
+    The N async envs each advance ~``full_steps / full_n_envs`` control steps, so setting
+    ``curriculum_horizon_steps`` to that makes each env's own progress track the global
+    training fraction (the schedules are measured per-env to survive subprocess isolation).
+    """
+    horizon = max(1, args.full_steps // max(1, args.full_n_envs))
+    return NavRLConfig(
+        w_collide=args.w_collide, w_approach=args.w_approach, drop_solver_cap=True,
+        curriculum=True, curriculum_horizon_steps=horizon,
+        bearing_deg_range=(args.bearing_lo, args.bearing_hi),
+        bearing_deg_target=(args.bearing_target_lo, args.bearing_target_hi),
+        bearing_widen_frac=args.bearing_widen_frac,
+        held_out_bearing_deg_range=(args.held_out_bearing_lo, args.held_out_bearing_hi),
+        held_out_n=args.held_out_n,
+        w_collide_max=args.w_collide_max,
+        w_collide_anneal_start=args.w_collide_anneal_start,
+        w_collide_anneal_end=args.w_collide_anneal_end,
+        obstacle_far_extra_lateral=args.obstacle_far_extra_lateral,
+        obstacle_near_frac=args.obstacle_near_frac,
+    )
+
+
 def full_run(args) -> None:
-    cfg = NavRLConfig(w_collide=args.w_collide, w_approach=args.w_approach, drop_solver_cap=True)
+    cfg = build_full_cfg(args)
     policy, ws = build_warm_started_policy(cfg)
-    print(f"[full] warm start {ws}  w_collide={cfg.w_collide}  w_approach={cfg.w_approach}  "
-          f"steps={args.full_steps}")
+    print(f"[full] warm start {ws}  w_collide={cfg.w_collide}→{cfg.w_collide_max} (anneal "
+          f"{cfg.w_collide_anneal_start}-{cfg.w_collide_anneal_end})  w_approach={cfg.w_approach}  "
+          f"bearing {cfg.bearing_deg_range}→{cfg.bearing_deg_target} over {cfg.bearing_widen_frac} "
+          f"(horizon {cfg.curriculum_horizon_steps:,}/env)  held_out {cfg.held_out_bearing_deg_range} "
+          f"n={cfg.held_out_n}  steps={args.full_steps}")
     ppo = PPOConfig(
         exp_name=args.exp_name,
         seed=args.seed,
@@ -1105,8 +1481,36 @@ def main() -> None:
                    help="per-in-contact-step penalty (2b default 0.25; sweep band 0.2-0.4)")
     p.add_argument("--w-approach", type=float, default=CALIBRATION_W_APPROACH,
                    help="Δapproach gain weight (2b default 2.0; homing must dominate worst contact)")
+    # 2c calibration band (the harder, wider fixed band for --calibrate)
+    p.add_argument("--cal-bearing-lo", type=float, default=20.0,
+                   help="2c calibration training+held-out bearing band low (deg)")
+    p.add_argument("--cal-bearing-hi", type=float, default=90.0,
+                   help="2c calibration training+held-out bearing band high (deg, > forager cone)")
+    p.add_argument("--held-out-n", type=int, default=16,
+                   help="held-out episodes (2c: bumped from 2b's 8 so the inside/outside split is robust)")
+    # 2c curriculum (used by --full; defaults reproduce the proposed schedule)
+    p.add_argument("--bearing-lo", type=float, default=20.0, help="--full curriculum START band low")
+    p.add_argument("--bearing-hi", type=float, default=60.0, help="--full curriculum START band high")
+    p.add_argument("--bearing-target-lo", type=float, default=0.0, help="--full curriculum TARGET low")
+    p.add_argument("--bearing-target-hi", type=float, default=360.0, help="--full curriculum TARGET high")
+    p.add_argument("--bearing-widen-frac", type=float, default=0.6,
+                   help="fraction of training over which the band widens to target")
+    p.add_argument("--held-out-bearing-lo", type=float, default=0.0,
+                   help="--full widened held-out band low (omnidirectional)")
+    p.add_argument("--held-out-bearing-hi", type=float, default=360.0,
+                   help="--full widened held-out band high (omnidirectional)")
+    p.add_argument("--w-collide-max", type=float, default=0.75, help="w_collide anneal ceiling")
+    p.add_argument("--w-collide-anneal-start", type=float, default=0.2,
+                   help="progress at which w_collide starts ramping up")
+    p.add_argument("--w-collide-anneal-end", type=float, default=0.7,
+                   help="progress at which w_collide reaches its ceiling")
+    p.add_argument("--obstacle-far-extra-lateral", type=float, default=2.0,
+                   help="extra |lateral| pushing the obstacle off-path at progress 0 (far→near)")
+    p.add_argument("--obstacle-near-frac", type=float, default=0.5,
+                   help="progress over which the obstacle slides onto the path")
     # PPO budget / shape
-    p.add_argument("--cal-steps", type=int, default=48000, help="calibration PPO budget (Gate 4)")
+    p.add_argument("--cal-steps", type=int, default=120000,
+                   help="calibration PPO budget (2c: ~100-150k, larger than 2b's 48k for the wider task)")
     p.add_argument("--full-steps", type=int, default=3_000_000, help="proposed full-run budget")
     p.add_argument("--n-envs", type=int, default=16, help="calibration parallel envs")
     p.add_argument("--full-n-envs", type=int, default=16)

@@ -129,6 +129,12 @@ class NavRLConfig:
     # --- held-out eval set (frozen, disjoint from train) ---
     held_out_n: int = 8
     held_out_seed: int = 20259  # fixed; reserved from the training RNG stream
+    # Bearing band the FROZEN held-out is drawn from. ``None`` -> bearing_deg_range
+    # (2b: held-out == the train band). 2c's curriculum sets this to the WIDENED /
+    # omnidirectional range so the yardstick reaches OUTSIDE the forager's ~40° cone
+    # (the Gate-2 finding: the narrow band is too easy). The held-out stays frozen +
+    # rejection-sampled disjoint from training at every curriculum stage.
+    held_out_bearing_deg_range: tuple[float, float] | None = None
     # A training layout within ALL of these tolerances of a held-out layout
     # (and on the same block side) is redrawn -> genuine disjointness.
     bearing_tol_deg: float = 4.0
@@ -159,6 +165,38 @@ class NavRLConfig:
     step_cost: float = 0.004
     reach_bonus: float = 8.0  # paid once on collision-free arrival
 
+    # --- progressive curriculum (2c; default OFF -> reproduces 2b bit-exact) ---
+    # The full run dissolves the forager's narrow-cone overfit into OMNIDIRECTIONAL
+    # homing by widening the *training* bearing band over training, annealing the
+    # collision penalty up only after homing stabilizes, and sliding the obstacle
+    # from off-path onto the path. All four levers are gated behind ``curriculum``:
+    # with it ``False`` every schedule is a no-op and the env behaves bit-exactly
+    # like 2b (same sampling RNG stream, same per-step reward, same held-out set).
+    curriculum: bool = False
+    # Per-env control-step horizon the schedules are measured against:
+    # progress = clip(cum_train_steps / curriculum_horizon_steps, 0, 1). The driver
+    # sets this to (total_steps / n_envs) so each async env's own progress tracks the
+    # global training fraction (the N envs advance ~1/N of the budget apiece).
+    curriculum_horizon_steps: int = 0
+    # Bearing curriculum: widen the TRAINING band from ``bearing_deg_range`` (narrow,
+    # the forager cone) to ``bearing_deg_target`` (omnidirectional) linearly over the
+    # first ``bearing_widen_frac`` of progress, then hold at the target.
+    bearing_deg_target: tuple[float, float] = (0.0, 360.0)
+    bearing_widen_frac: float = 0.6
+    # w_collide anneal: ramp w_collide (its base value is the homing-phase penalty)
+    # up to ``w_collide_max`` linearly over progress in [anneal_start, anneal_end], so
+    # the policy learns to home BEFORE avoidance tightens (avoids the 2a stall basin).
+    w_collide_max: float = 0.75
+    w_collide_anneal_start: float = 0.2
+    w_collide_anneal_end: float = 0.7
+    # Far->near obstacle curriculum: at progress 0 the obstacle is pushed
+    # ``obstacle_far_extra_lateral`` world-units further off the path (so the straight
+    # start->goal line misses the disk -> homing is unobstructed); the extra offset
+    # ramps to 0 over the first ``obstacle_near_frac`` of progress, sliding the
+    # obstacle onto the path (the real detour task) as reach stabilizes.
+    obstacle_far_extra_lateral: float = 2.0
+    obstacle_near_frac: float = 0.5
+
     # --- solver cap (obstacle envs only) ---
     # FlyEnv.__init__ caps the contact solver to CG (iters 30 / ls 20) whenever
     # obstacles are present (OBSTACLE_SOLVER*). With real fly<->obstacle contacts
@@ -188,6 +226,13 @@ class NavRLEnv(EmbodiedRLEnv):
 
     def __init__(self, cfg: NavRLConfig | None = None) -> None:
         self.cfg = cfg or NavRLConfig()
+        # Curriculum bookkeeping (no-ops when cfg.curriculum is False). Each env
+        # instance counts its OWN cumulative TRAINING control steps; progress =
+        # that / curriculum_horizon_steps. ``_cur_eval`` marks the live episode as
+        # held-out (its steps don't advance the curriculum, and its reward uses the
+        # base weights, not the annealed ones).
+        self._train_steps: int = 0
+        self._cur_eval: bool = False
 
         # Per-channel observation bounds: ch0 (joint angles) in [-1, 1], the
         # rest (contacts, odor, feeler) in [0, 1]. Zeros (the unused cells) lie
@@ -217,11 +262,61 @@ class NavRLEnv(EmbodiedRLEnv):
             max_episode_steps=self.cfg.max_episode_steps,
         )
 
-    # ---- domain randomization ------------------------------------------- #
-    def _draw_params(self, rng: np.random.Generator) -> dict:
+    # ---- curriculum schedules (all no-ops when cfg.curriculum is False) -- #
+    def _progress(self) -> float:
+        """Training progress in [0, 1] from THIS env's cumulative train steps.
+
+        0.0 whenever the curriculum is off or the horizon is unset, so every
+        schedule below collapses to its 2b base value.
+        """
+        h = self.cfg.curriculum_horizon_steps
+        if not self.cfg.curriculum or h <= 0:
+            return 0.0
+        return min(1.0, self._train_steps / float(h))
+
+    def _train_bearing_range(self, progress: float) -> tuple[float, float]:
+        """The widening training bearing band at this progress (base band if off)."""
         cfg = self.cfg
+        if not cfg.curriculum:
+            return cfg.bearing_deg_range
+        w = cfg.bearing_widen_frac
+        t = 1.0 if w <= 0.0 else min(progress / w, 1.0)
+        lo0, hi0 = cfg.bearing_deg_range
+        lo1, hi1 = cfg.bearing_deg_target
+        return (lo0 + (lo1 - lo0) * t, hi0 + (hi1 - hi0) * t)
+
+    def effective_w_collide(self, progress: float | None = None) -> float:
+        """Annealed collision penalty at this progress (base ``w_collide`` if off)."""
+        cfg = self.cfg
+        if not cfg.curriculum:
+            return cfg.w_collide
+        p = self._progress() if progress is None else progress
+        s, e = cfg.w_collide_anneal_start, cfg.w_collide_anneal_end
+        t = 1.0 if e <= s else min(max((p - s) / (e - s), 0.0), 1.0)
+        return cfg.w_collide + (cfg.w_collide_max - cfg.w_collide) * t
+
+    def _apply_obstacle_curriculum(self, params: dict, progress: float) -> dict:
+        """Push the obstacle off-path early, slide it onto the path as reach grows."""
+        cfg = self.cfg
+        if not cfg.curriculum or cfg.obstacle_far_extra_lateral <= 0.0:
+            return params
+        n = cfg.obstacle_near_frac
+        t = 1.0 if n <= 0.0 else min(progress / n, 1.0)
+        extra = cfg.obstacle_far_extra_lateral * (1.0 - t)
+        if extra <= 0.0:
+            return params
+        p = dict(params)
+        p["lateral"] = params["lateral"] + extra
+        return p
+
+    # ---- domain randomization ------------------------------------------- #
+    def _draw_params(
+        self, rng: np.random.Generator, bearing_range: tuple[float, float] | None = None
+    ) -> dict:
+        cfg = self.cfg
+        br = bearing_range if bearing_range is not None else cfg.bearing_deg_range
         return {
-            "bearing_deg": float(rng.uniform(*cfg.bearing_deg_range)),
+            "bearing_deg": float(rng.uniform(*br)),
             "frac": float(rng.uniform(*cfg.obstacle_frac_range)),
             "side": float(rng.choice((-1.0, 1.0))),
             "lateral": float(rng.uniform(*cfg.obstacle_lateral_range)),
@@ -230,17 +325,28 @@ class NavRLEnv(EmbodiedRLEnv):
 
     def _make_held_out(self, cfg: NavRLConfig) -> list[dict]:
         rng = np.random.default_rng(cfg.held_out_seed)
-        return [self._draw_params(rng) for _ in range(cfg.held_out_n)]
+        # held_out_bearing_deg_range is None for 2b -> bearing_deg_range, so the draw
+        # sequence (and thus the frozen set) is byte-identical to 2b when off.
+        br = cfg.held_out_bearing_deg_range or cfg.bearing_deg_range
+        return [self._draw_params(rng, br) for _ in range(cfg.held_out_n)]
 
     def _sample_train_params(self, rng: np.random.Generator) -> dict:
-        """Draw a training layout, rejecting any too close to a held-out one."""
+        """Draw a training layout, rejecting any too close to a held-out one.
+
+        With the curriculum on, the bearing band widens with progress and the
+        obstacle slides from off-path onto the path; with it off this is the exact
+        2b draw (``_train_bearing_range`` returns the base band, the obstacle hook
+        is a no-op), so the training RNG stream is unchanged.
+        """
+        progress = self._progress()
+        br = self._train_bearing_range(progress)
         for _ in range(self.cfg.max_reject_tries):
-            p = self._draw_params(rng)
+            p = self._draw_params(rng, br)
             if not any(_params_too_close(p, h, self.cfg) for h in self._held_out):
-                return p
+                return self._apply_obstacle_curriculum(p, progress)
         # Continuous ranges make exhaustion astronomically unlikely; if it ever
         # happens, fall back to the last draw rather than loop forever.
-        return p
+        return self._apply_obstacle_curriculum(p, progress)
 
     def _layout_from_params(self, params: dict) -> dict:
         """Build the concrete world (goal + obstacle) from sampled params."""
@@ -263,6 +369,9 @@ class NavRLEnv(EmbodiedRLEnv):
     def _sample_layout(
         self, rng: np.random.Generator, eval_mode: bool, eval_index: int
     ) -> dict:
+        # Remember whether THIS episode is held-out: its steps must not advance the
+        # curriculum and its reward must use the base (un-annealed) weights.
+        self._cur_eval = bool(eval_mode)
         if eval_mode:
             params = self._held_out[eval_index % len(self._held_out)]
         else:
@@ -347,7 +456,13 @@ class NavRLEnv(EmbodiedRLEnv):
         reached = bool(dist_now < cfg.reach_radius)
         fell = bool(step_reward.below_threshold)
 
-        reward = cfg.w_approach * approach - cfg.w_collide * float(in_contact) - cfg.step_cost
+        # Advance this env's curriculum clock on TRAINING steps only, then read the
+        # annealed collision penalty at the current progress (both no-ops with the
+        # curriculum off: w_collide stays cfg.w_collide, so the reward is bit-exact).
+        if not self._cur_eval:
+            self._train_steps += 1
+        w_collide = self.effective_w_collide()
+        reward = cfg.w_approach * approach - w_collide * float(in_contact) - cfg.step_cost
         collision_free = not ctx["ever_collided"]
         if reached and collision_free:
             reward += cfg.reach_bonus  # gated on collision-free arrival
@@ -384,6 +499,8 @@ class NavRLEnv(EmbodiedRLEnv):
             "goal_bearing": goal_bearing,
             "ever_collided": ctx["ever_collided"],
             "approach": float(approach),
+            "curriculum_progress": float(self._progress()),
+            "w_collide_eff": float(w_collide),
         }
         return float(reward), terminated, info
 
