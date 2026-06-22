@@ -1,0 +1,6 @@
+{
+  "env": "Pendulum-v1",
+  "baseline_holdout_return": -1024.0791314301123,
+  "final_holdout_return": -814.724691253368,
+  "config": "gate_pendulum"
+}
