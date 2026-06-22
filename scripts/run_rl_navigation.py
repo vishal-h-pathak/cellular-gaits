@@ -652,14 +652,24 @@ def calibrate(args) -> None:
     # the cone?". The progressive curriculum SCHEDULE (which compresses badly into a
     # cheap budget) is exercised + validated by Gate 0 and baked into --full instead.
     band = (args.cal_bearing_lo, args.cal_bearing_hi)
+    # 2d homing-extension probe (--obstacle-free): push the obstacle 20 world-units off the
+    # start->goal line (>> radius + feeler_range=6), so the straight path never clips it (no
+    # collisions possible) and the feelers read ~0. This strips out the avoidance confound that
+    # collapsed the 2c probe and asks the crux question alone: can PPO extend the warm-start
+    # forager's ~40° homing cone toward omnidirectional?
+    obstacle_kw = dict(obstacle_lateral_range=(20.0, 20.0)) if args.obstacle_free else {}
     cfg = NavRLConfig(
         w_collide=args.w_collide, w_approach=args.w_approach, drop_solver_cap=True,
         bearing_deg_range=band, held_out_bearing_deg_range=band,
         held_out_n=args.held_out_n,
+        **obstacle_kw,
     )
-    print(f"[cal] 2c harder-band calibration: bearing_deg_range={cfg.bearing_deg_range} "
-          f"held_out_n={cfg.held_out_n}  forager_cone={FORAGER_CONE_DEG:.0f}° "
-          f"(fixed moderately-wide band; curriculum schedule validated by Gate 0 + baked into --full)")
+    mode = "2d OBSTACLE-FREE homing-extension probe" if args.obstacle_free else "2c harder-band calibration"
+    print(f"[cal] {mode}: bearing_deg_range={cfg.bearing_deg_range} "
+          f"held_out_n={cfg.held_out_n}  forager_cone={FORAGER_CONE_DEG:.0f}°  "
+          f"obstacle_lateral_range={cfg.obstacle_lateral_range}"
+          + ("  (obstacle far off-path → pure homing)" if args.obstacle_free
+             else "  (fixed moderately-wide band; curriculum validated by Gate 0 + baked into --full)"))
     print(f"[cal] NavRLConfig: w_collide={cfg.w_collide} w_approach={cfg.w_approach} "
           f"drop_solver_cap={cfg.drop_solver_cap} gate_tau={GATE_TAU}")
 
@@ -690,10 +700,19 @@ def calibrate(args) -> None:
         "gate3_ab_integrity": g3,
         "gate4_short_ppo": g4,
     }
-    out = SCRATCH / "calibration_rl.json"
+    out = SCRATCH / ("calibration_homing_probe.json" if args.obstacle_free else "calibration_rl.json")
     out.write_text(json.dumps(payload, indent=2, default=float))
     print(f"\n[cal] wrote {out.relative_to(ROOT)}")
-    _append_curriculum_report(args, cfg, payload)
+    if args.obstacle_free:
+        # The probe's deliverable is the streamed gate-4 pre/post inside-vs-outside split;
+        # don't clobber the committed 2c "Curriculum pass" report section.
+        sp = g4["post"]["split"]
+        print(f"[cal] 2d homing probe DONE — held-out clean_reach  inside(<=60°)="
+              f"{sp['inside_clean_reach']}  outside(>60°)={sp['outside_clean_reach']}  "
+              f"(pre outside={g4['pre']['split']['outside_clean_reach']}). "
+              f"Outside lifting off 0 = omnidirectional homing is learnable. Report append skipped.")
+    else:
+        _append_curriculum_report(args, cfg, payload)
 
 
 def _fmt(x: float, nd: int = 2) -> str:
@@ -1488,6 +1507,10 @@ def main() -> None:
                    help="2c calibration training+held-out bearing band high (deg, > forager cone)")
     p.add_argument("--held-out-n", type=int, default=16,
                    help="held-out episodes (2c: bumped from 2b's 8 so the inside/outside split is robust)")
+    p.add_argument("--obstacle-free", action="store_true",
+                   help="homing-extension probe (2d): push the obstacle far off-path (no collisions "
+                        "possible, feelers read ~0) to ISOLATE whether PPO can extend the warm-start's "
+                        "homing cone to wide bearings — without the avoidance confound that collapsed 2c")
     # 2c curriculum (used by --full; defaults reproduce the proposed schedule)
     p.add_argument("--bearing-lo", type=float, default=20.0, help="--full curriculum START band low")
     p.add_argument("--bearing-hi", type=float, default=60.0, help="--full curriculum START band high")
