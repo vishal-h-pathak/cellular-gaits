@@ -46,7 +46,7 @@ reset(seed, options) : applies domain randomization — samples the goal bearing
     same distributions.
 
 step(action) -> (obs, reward, terminated, truncated, info):
-    reward = Δapproach - w_collide * in_contact - step_cost
+    reward = w_approach * Δapproach - w_collide * in_contact - step_cost
              (+ reach_bonus  iff  reached AND the episode has been collision-free)
     The collision-free gate on the reach bonus is the fix for N-A's "reach by
     grazing" exploit. ``terminated`` on reach or fall; ``truncated`` on the time
@@ -138,7 +138,21 @@ class NavRLConfig:
     max_reject_tries: int = 200
 
     # --- reward shaping (per-step decomposition of N-A's episode fitness) ---
-    w_collide: float = 0.2  # penalty per in-contact step (time-in-contact)
+    # Δapproach gain weight. The first calibration (2a) over-suppressed the final
+    # approach: at w_collide=0.75 the per-step contact penalty dwarfed the per-step
+    # approach gain, so PPO fell into a "stall short of the obstacle" basin. 2b
+    # rebalances by (a) lowering w_collide and (b) weighting Δapproach UP so a
+    # clean reach clearly dominates the worst plausible per-episode contact cost.
+    # Over a clean reach Δapproach telescopes to (d_start - reach_radius) ~= 15, so
+    # the homing return is w_approach*15 + reach_bonus; the worst plausible contact
+    # cost is w_collide * ~28 in-contact steps ~= 7 at w_collide=0.25. w_approach=2.0
+    # makes homing (~38) dominate the worst contact (~7) by >5x. Sweepable via --w-approach.
+    w_approach: float = 2.0
+    # Penalty per in-contact step (time-in-contact). 2b lowers this from the 2a
+    # 0.75 to 0.25 (sweep band 0.2-0.4): real fly<->obstacle contacts run ~11-28
+    # steps/episode, so 0.25 integrates to ~3-7 of penalty — enough to make a clean
+    # detour the optimum, but no longer large enough to suppress the final approach.
+    w_collide: float = 0.25
     # Per-step analog of NavConfig.time_penalty (4.0 * reach_frac): a constant
     # 4.0 / (max_episode_steps - 1) ~= 0.004 integrates to the same ~4 over a
     # full non-reaching episode. Encourages reaching sooner.
@@ -333,7 +347,7 @@ class NavRLEnv(EmbodiedRLEnv):
         reached = bool(dist_now < cfg.reach_radius)
         fell = bool(step_reward.below_threshold)
 
-        reward = approach - cfg.w_collide * float(in_contact) - cfg.step_cost
+        reward = cfg.w_approach * approach - cfg.w_collide * float(in_contact) - cfg.step_cost
         collision_free = not ctx["ever_collided"]
         if reached and collision_free:
             reward += cfg.reach_bonus  # gated on collision-free arrival
@@ -374,10 +388,18 @@ class NavRLEnv(EmbodiedRLEnv):
         return float(reward), terminated, info
 
 
-def make_nav_env(cfg: NavRLConfig | None = None) -> NavRLEnv:
+def make_nav_env(cfg: NavRLConfig | None = None) -> gym.Env:
     """Factory for one ``NavRLEnv`` (a no-arg-friendly thunk for vector envs).
 
     ``gymnasium.vector.AsyncVectorEnv([lambda: make_nav_env(cfg) for _ in ...])``
     gets N independent copies; each builds its own FlyEnv per reset.
+
+    The env is wrapped in ``RecordEpisodeStatistics`` so finished-episode return /
+    length surface in ``info["episode"]``; ``AsyncVectorEnv`` then aggregates these
+    into the ``infos["episode"]`` + ``_episode``-mask format the PPO loop's
+    ``_collect_episode_stats`` parses (2b fix: without it ``charts/episodic_return``
+    logged ``nan`` because no episode stats ever reached the loop). Eval uses
+    ``NavRLEnv`` directly, so the wrapper is training-only and never touches the
+    held-out metrics.
     """
-    return NavRLEnv(cfg)
+    return gym.wrappers.RecordEpisodeStatistics(NavRLEnv(cfg))

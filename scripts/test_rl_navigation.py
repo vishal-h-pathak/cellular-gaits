@@ -7,7 +7,7 @@ steps, one PPO update) so it runs in well under a minute; the heavy four-gate
 calibration lives in ``scripts/run_rl_navigation.py --calibrate``.
 
 What it checks:
-  1. ``NavRLEnv`` builds with the calibration config (w_collide=0.75, Newton cap
+  1. ``NavRLEnv`` builds with the calibration config (w_collide=0.25, Newton cap
      dropped); obs/action spaces match the contract; a random rollout stays in
      space with all info keys and bounded ``ncon``.
   2. ``NCAPolicy`` warm-starts from the chemo forager and implements the cleanrl

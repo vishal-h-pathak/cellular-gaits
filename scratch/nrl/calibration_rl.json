@@ -1,6 +1,7 @@
 {
   "config": {
-    "w_collide": 0.75,
+    "w_collide": 0.25,
+    "w_approach": 2.0,
     "drop_solver_cap": true,
     "bearing_deg_range": [
       20.0,
@@ -20,6 +21,7 @@
     ],
     "reach_bonus": 8.0,
     "step_cost": 0.004,
+    "gate_tau": 2,
     "held_out_n": 8,
     "max_episode_steps": 1000
   },
@@ -35,20 +37,30 @@
     "vec_reset_match": true,
     "vec_max_abs_diff": 0.0,
     "n_envs": 16,
-    "parallel_steps_per_s": 1807.5491261236812,
-    "sequential_steps_per_s": 238.08071233820365,
-    "speedup": 7.5921695141603145,
-    "reset_ms": 461.7290989999674
+    "parallel_steps_per_s": 1998.2276844415874,
+    "sequential_steps_per_s": 240.7580826812224,
+    "speedup": 8.299732504047876,
+    "reset_ms": 478.97218600004027
   },
   "gate2_na_baseline": {
     "aggregate": {
       "detour_success_rate": 0.375,
+      "detour_success_gated_rate": 0.375,
       "clean_reach_rate": 0.625,
       "reach_rate": 0.625,
+      "reach_gated_rate": 0.625,
       "avoid_rate": 0.875,
       "detour_correct_rate": 0.5,
       "mean_collisions": 119.75,
       "mean_min_dist": 3.86299044944744,
+      "gate_tau": 2,
+      "decomp": {
+        "r_approach": 24.068379188168066,
+        "r_collision": -29.9375,
+        "r_stepcost": -2.21,
+        "r_reach_bonus": 5.0,
+        "ep_return": -3.0791208118319346
+      },
       "n_episodes": 8,
       "source": "outputs/web_data_n/navigation_controller.json"
     },
@@ -62,9 +74,16 @@
         "detour_perp": -3.7219832918576445,
         "detour_correct": false,
         "detour_success": false,
+        "detour_success_gated": false,
+        "reach_gated": false,
         "clean_reach": false,
         "min_dist": 4.985058004674481,
-        "steps": 121
+        "steps": 121,
+        "r_approach": 25.060062448671694,
+        "r_collision": -0.0,
+        "r_stepcost": -0.484,
+        "r_reach_bonus": 0.0,
+        "ep_return": 24.576062448671692
       },
       {
         "bearing_deg": 55.89440764428873,
@@ -75,9 +94,16 @@
         "detour_perp": -3.3992199875589977,
         "detour_correct": true,
         "detour_success": true,
+        "detour_success_gated": true,
+        "reach_gated": true,
         "clean_reach": true,
         "min_dist": 2.9741277818617626,
-        "steps": 147
+        "steps": 147,
+        "r_approach": 29.41514211118926,
+        "r_collision": -0.0,
+        "r_stepcost": -0.588,
+        "r_reach_bonus": 8.0,
+        "ep_return": 36.82714211118926
       },
       {
         "bearing_deg": 23.470692442859622,
@@ -88,9 +114,16 @@
         "detour_perp": -1.2622034936992579,
         "detour_correct": true,
         "detour_success": false,
+        "detour_success_gated": false,
+        "reach_gated": false,
         "clean_reach": false,
         "min_dist": 3.5317130114645163,
-        "steps": 1000
+        "steps": 1000,
+        "r_approach": 5.6554326694805255,
+        "r_collision": -0.0,
+        "r_stepcost": -4.0,
+        "r_reach_bonus": 0.0,
+        "ep_return": 1.6554326694805255
       },
       {
         "bearing_deg": 23.068722936602043,
@@ -101,9 +134,16 @@
         "detour_perp": -2.63000087455855,
         "detour_correct": false,
         "detour_success": false,
+        "detour_success_gated": false,
+        "reach_gated": false,
         "clean_reach": false,
         "min_dist": 7.648354337372784,
-        "steps": 1000
+        "steps": 1000,
+        "r_approach": 15.231459081644022,
+        "r_collision": -239.5,
+        "r_stepcost": -4.0,
+        "r_reach_bonus": 0.0,
+        "ep_return": -228.26854091835597
       },
       {
         "bearing_deg": 34.816488658145175,
@@ -114,9 +154,16 @@
         "detour_perp": -2.621251044973428,
         "detour_correct": true,
         "detour_success": true,
+        "detour_success_gated": true,
+        "reach_gated": true,
         "clean_reach": true,
         "min_dist": 2.98275400679103,
-        "steps": 637
+        "steps": 637,
+        "r_approach": 29.089634974538292,
+        "r_collision": -0.0,
+        "r_stepcost": -2.548,
+        "r_reach_bonus": 8.0,
+        "ep_return": 34.54163497453829
       },
       {
         "bearing_deg": 41.2803576615905,
@@ -127,9 +174,16 @@
         "detour_perp": 1.589107175366049,
         "detour_correct": true,
         "detour_success": true,
+        "detour_success_gated": true,
+        "reach_gated": true,
         "clean_reach": true,
         "min_dist": 2.925082040603301,
-        "steps": 970
+        "steps": 970,
+        "r_approach": 29.28755069502546,
+        "r_collision": -0.0,
+        "r_stepcost": -3.88,
+        "r_reach_bonus": 8.0,
+        "ep_return": 33.40755069502546
       },
       {
         "bearing_deg": 54.0396634598685,
@@ -140,9 +194,16 @@
         "detour_perp": 0.0,
         "detour_correct": false,
         "detour_success": false,
+        "detour_success_gated": false,
+        "reach_gated": true,
         "clean_reach": true,
         "min_dist": 2.9273534358337225,
-        "steps": 156
+        "steps": 156,
+        "r_approach": 29.477420818101407,
+        "r_collision": -0.0,
+        "r_stepcost": -0.624,
+        "r_reach_bonus": 8.0,
+        "ep_return": 36.85342081810141
       },
       {
         "bearing_deg": 44.92769142617319,
@@ -153,9 +214,16 @@
         "detour_perp": -3.5757749691536884,
         "detour_correct": false,
         "detour_success": false,
+        "detour_success_gated": false,
+        "reach_gated": true,
         "clean_reach": true,
         "min_dist": 2.9294809769779224,
-        "steps": 389
+        "steps": 389,
+        "r_approach": 29.330330706693843,
+        "r_collision": -0.0,
+        "r_stepcost": -1.556,
+        "r_reach_bonus": 8.0,
+        "ep_return": 35.774330706693846
       }
     ]
   },
@@ -169,37 +237,76 @@
   "gate4_short_ppo": {
     "pre": {
       "detour_success_rate": 0.125,
+      "detour_success_gated_rate": 0.0,
       "clean_reach_rate": 0.0,
       "reach_rate": 0.25,
+      "reach_gated_rate": 0.0,
       "avoid_rate": 0.5,
       "detour_correct_rate": 0.875,
       "mean_collisions": 48.25,
       "mean_min_dist": 9.400255074673742,
+      "gate_tau": 2,
+      "decomp": {
+        "r_approach": -22.428594860647628,
+        "r_collision": -12.0625,
+        "r_stepcost": -3.7350000000000003,
+        "r_reach_bonus": 0.0,
+        "ep_return": -38.226094860647635
+      },
       "n_episodes": 8
     },
     "post": {
-      "detour_success_rate": 0.0,
-      "clean_reach_rate": 0.0,
-      "reach_rate": 0.0,
-      "avoid_rate": 1.0,
-      "detour_correct_rate": 0.5,
-      "mean_collisions": 0.0,
-      "mean_min_dist": 11.231383922080404,
+      "detour_success_rate": 0.125,
+      "detour_success_gated_rate": 0.125,
+      "clean_reach_rate": 0.125,
+      "reach_rate": 0.25,
+      "reach_gated_rate": 0.125,
+      "avoid_rate": 0.75,
+      "detour_correct_rate": 0.625,
+      "mean_collisions": 7.75,
+      "mean_min_dist": 8.011085504960178,
+      "gate_tau": 2,
+      "decomp": {
+        "r_approach": -23.066235125944115,
+        "r_collision": -1.9375,
+        "r_stepcost": -3.302,
+        "r_reach_bonus": 1.0,
+        "ep_return": -27.305735125944114
+      },
       "n_episodes": 8
     },
     "na_baseline": {
       "detour_success_rate": 0.375,
+      "detour_success_gated_rate": 0.375,
       "clean_reach_rate": 0.625,
       "reach_rate": 0.625,
+      "reach_gated_rate": 0.625,
       "avoid_rate": 0.875,
       "detour_correct_rate": 0.5,
       "mean_collisions": 119.75,
       "mean_min_dist": 3.86299044944744,
+      "gate_tau": 2,
+      "decomp": {
+        "r_approach": 24.068379188168066,
+        "r_collision": -29.9375,
+        "r_stepcost": -2.21,
+        "r_reach_bonus": 5.0,
+        "ep_return": -3.0791208118319346
+      },
       "n_episodes": 8,
       "source": "outputs/web_data_n/navigation_controller.json"
     },
-    "wall_s": 620.0781450200002,
+    "wall_s": 686.9947607519998,
     "num_updates": 6,
+    "return_curve": [
+      -1.21,
+      -1.29,
+      -1.79,
+      -1.52,
+      -1.34,
+      -1.44
+    ],
+    "returns_finite": true,
     "config": {
       "total_steps": 48000,
       "n_envs": 16,

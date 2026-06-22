@@ -1,0 +1,39 @@
+/home/jarvis/dev/jarvis/cellular-gaits/.venv/lib/python3.12/site-packages/glfw/__init__.py:917: GLFWError: (65550) b'X11: The DISPLAY environment variable is missing'
+  warnings.warn(message, GLFWError)
+[cal] NavRLConfig: w_collide=0.25 w_approach=2.0 drop_solver_cap=True bearing_deg_range=(20.0, 60.0) held_out_n=8 gate_tau=2
+
+[gate1] env sanity on the physical task (Newton cap dropped) ...
+[gate1] shapes_ok=True cap_dropped=True (solver=2/iters=100)  ncon_peak=21 (<= 25: True)
+[gate1] vec determinism: reset_match=True max|Δ|=0.00e+00  throughput: 1998 steps/s (16 envs) vs 241 solo -> 8.3x  reset=479ms
+
+[gate2] N-A overfit baseline, measured on the held-out set in THIS env ...
+[gate2] N-A on held-out: detour_success(raw)=0.38  detour_success(gated τ=2)=0.38  reach(raw)=0.62  reach(gated)=0.62  clean_reach=0.62  mean_coll=119.8  (source outputs/web_data_n/navigation_controller.json)
+
+[gate3] A/B integrity: feeler-zeroed warm-start == chemo forward (bit-exact) ...
+[gate3] feeler-off Δ=0.00e+00  feeler-on Δ=0.00e+00  bit-exact=True
+
+[gate4] short PPO run (48000 steps, 16 envs) ...
+[gate4] pre-PPO held-out: detour_success=0.12  reach=0.25  mean_coll=48.2
+[ppo] device=cuda n_envs=16 batch=8000 minibatch=400 updates=6
+[ppo] recurrent state_shape=(4, 8, 8) dtype=torch.float32
+[ppo] update=1/6 step=8000 return=-1.21 v_loss=1.061 kl=0.0044 SPS=80
+[ppo] update=2/6 step=16000 return=-1.29 v_loss=1.575 kl=0.0036 SPS=67 eval={'detour_success_rate': 0.0, 'detour_success_gated_rate': 0.0, 'clean_reach_rate': 0.0, 'reach_rate': 0.0, 'reach_gated_rate': 0.0, 'avoid_rate': 0.375, 'detour_correct_rate': 0.25, 'mean_collisions': 537.375, 'mean_min_dist': 8.68754183969845, 'gate_tau': 2, 'decomp': {'r_approach': -18.454742030777496, 'r_collision': -134.34375, 'r_stepcost': -3.6605, 'r_reach_bonus': 0.0, 'ep_return': -156.4589920307775}, 'n_episodes': 8}
+[ppo] update=3/6 step=24000 return=-1.79 v_loss=1.274 kl=0.0020 SPS=72
+[ppo] update=4/6 step=32000 return=-1.52 v_loss=1.493 kl=0.0011 SPS=70 eval={'detour_success_rate': 0.375, 'detour_success_gated_rate': 0.375, 'clean_reach_rate': 0.5, 'reach_rate': 0.5, 'reach_gated_rate': 0.5, 'avoid_rate': 0.625, 'detour_correct_rate': 0.5, 'mean_collisions': 249.25, 'mean_min_dist': 4.658629011673252, 'gate_tau': 2, 'decomp': {'r_approach': 13.07420185234926, 'r_collision': -62.3125, 'r_stepcost': -2.7729999999999997, 'r_reach_bonus': 4.0, 'ep_return': -48.011298147650734}, 'n_episodes': 8}
+[ppo] update=5/6 step=40000 return=-1.34 v_loss=1.492 kl=0.0012 SPS=72
+[ppo] update=6/6 step=48000 return=-1.44 v_loss=1.163 kl=0.0011 SPS=70 eval={'detour_success_rate': 0.125, 'detour_success_gated_rate': 0.125, 'clean_reach_rate': 0.125, 'reach_rate': 0.25, 'reach_gated_rate': 0.125, 'avoid_rate': 0.75, 'detour_correct_rate': 0.625, 'mean_collisions': 7.75, 'mean_min_dist': 8.011085504960178, 'gate_tau': 2, 'decomp': {'r_approach': -23.066235125944115, 'r_collision': -1.9375, 'r_stepcost': -3.302, 'r_reach_bonus': 1.0, 'ep_return': -27.305735125944114}, 'n_episodes': 8}
+[ppo] done. final checkpoint -> /home/jarvis/dev/jarvis/cellular-gaits/scratch/nrl/ckpt/nrl_nav_final.pt
+[gate4] episodic_return curve (6 updates): FINITE -> [-1.21, -1.29, -1.79, -1.52, -1.34, -1.44]
+[gate4] post-PPO held-out: detour_success(gated)=0.12  clean_reach=0.12  reach(raw)=0.25  mean_coll=7.8
+
+[cal] wrote scratch/nrl/calibration_rl.json
+[cal] appended Rebalance pass (2b) to ops/reports/REPORT_n_rl_calibration.md
+
+======================================================================
+N-RL REBALANCE (2b) GATES:
+  Gate 1 (env sanity + ncon bounded):          ✅
+  Gate 2 (N-A gated yardstick honest):         ⚠️
+  Gate 3 (A/B bit-exact):                      ✅
+  Gate 4 (rebalance trend):                    ✅
+  episodic_return finite:                      True
+======================================================================
