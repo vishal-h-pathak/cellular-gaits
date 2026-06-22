@@ -1,0 +1,57 @@
+{
+  "chemo_source": {
+    "path": "/Users/jarvis/dev/jarvis/cg-rl-policy/scratch/nrl/synthetic_chemo_controller.json",
+    "is_real": false
+  },
+  "param_check": {
+    "chemo_params": 1236,
+    "nav_params": 1524
+  },
+  "ab_max_abs_delta": {
+    "feeler_zeroed": 0.0,
+    "feeler_on_warmstart": 0.0
+  },
+  "gain_invariance_max_abs_delta": 0.0,
+  "value_logstd": {
+    "value": -0.5904761552810669,
+    "value_shape": [
+      1,
+      1
+    ],
+    "log_std_shape": [
+      1,
+      42
+    ],
+    "log_std_finite": true
+  },
+  "interface": {
+    "action_shape": [
+      4,
+      42
+    ],
+    "logprob_shape": [
+      4
+    ],
+    "entropy_shape": [
+      4
+    ],
+    "value_shape": [
+      4,
+      1
+    ],
+    "next_ca_shape": [
+      4,
+      4,
+      8,
+      8
+    ],
+    "next_ca_detached": true,
+    "shuffled_rescore_logprob_delta": 0.0,
+    "shuffled_rescore_value_delta": 0.0
+  },
+  "grad_flow": {
+    "conv1_grad_nonzero": true,
+    "value_head_grad_nonzero": true,
+    "log_std_grad_present": true
+  }
+}
