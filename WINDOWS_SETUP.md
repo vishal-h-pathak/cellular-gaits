@@ -85,6 +85,32 @@ After this, you launch and monitor runs from the Mac — see `cockpit.sh` below.
 
 ---
 
+## Tier 1.5 — survive a reboot (autostart, so the box self-heals)
+
+Tier 1 gets the box reachable *right now*, but WSL2 does **not** auto-boot at Windows startup, and a
+fresh WSL session doesn't start `sshd`/`tailscaled` unless they're enabled as boot services. So after
+any reboot the box goes dark on the tailnet (`tailscale status` shows it `offline, last seen …`) until
+you hand-start things. Fix it once:
+
+1. **WSL/Linux half — run the helper on sentry, inside the WSL2 Ubuntu shell:**
+   ```
+   cd ~/dev/jarvis/cellular-gaits && bash ops/sentry-autostart-setup.sh
+   ```
+   It enables systemd + `ssh` + `tailscaled` on boot and ensures tailscale is authed (state persists),
+   then prints the Windows step. Idempotent — safe to re-run. If it reports it just turned systemd on,
+   run `wsl --shutdown` from Windows, reopen Ubuntu, and run it once more so `systemctl enable` sticks.
+
+2. **Windows half — boot WSL at logon** (the piece that closes the gap). In an **elevated PowerShell**
+   on Windows, register a Task Scheduler entry that starts WSL when you log in and holds it open
+   (the exact snippet is printed by the script above; it's a `Register-ScheduledTask … -AtLogOn`
+   running `wsl.exe -d Ubuntu … sh -c "while true; do sleep 3600; done"`).
+
+After this, a reboot + login brings the box back on the tailnet on its own. Verify from the Mac:
+`tailscale ping 100.86.154.46 && ./ops/fleet-preflight.sh quick`. (For unattended reboots with no
+login, also enable Windows auto-login via `netplwiz` — a security tradeoff.)
+
+---
+
 ## Tier 2 — GPU workstation (only for the RL / MJX endgame; not needed now)
 
 The 3080 Ti does nothing for the current CPU CMA-ES. Do this when we start the connectome/RL work.
