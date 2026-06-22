@@ -1,0 +1,67 @@
+[evolve-ch] run_id=cha_full  n_params=1236  pop=32 gens=50 sigma=0.2  workers=9  azimuths=(0.0, 90.0, 270.0)  dist=18.0 lam=12.0 reach_r=3.0  start_gen=0 phase=original
+[evolve-ch] gen   1/50  best=6.4861  mean=1.0657  std=2.4365  (33.8s)
+[evolve-ch] gen   2/50  best=7.2365  mean=1.7195  std=2.5660  (31.3s)
+[evolve-ch] gen   3/50  best=6.6380  mean=1.7949  std=2.7908  (32.2s)
+[evolve-ch] gen   4/50  best=6.3515  mean=1.5737  std=2.6831  (34.1s)
+[evolve-ch] gen   5/50  best=6.2154  mean=1.5892  std=2.3685  (33.4s)
+[evolve-ch]   checkpoint -> checkpoints/cha_full/gen_05.npz
+[evolve-ch] gen   6/50  best=6.3484  mean=1.9122  std=2.6762  (36.9s)
+[evolve-ch] gen   7/50  best=6.0763  mean=1.9090  std=2.5759  (38.0s)
+[evolve-ch] gen   8/50  best=6.2546  mean=1.1512  std=2.6003  (38.0s)
+[evolve-ch] gen   9/50  best=6.3523  mean=1.9459  std=2.5664  (38.8s)
+[evolve-ch] gen  10/50  best=8.2167  mean=1.0682  std=2.7786  (37.5s)
+[evolve-ch]   checkpoint -> checkpoints/cha_full/gen_10.npz
+[evolve-ch] gen  11/50  best=9.1558  mean=1.9574  std=2.7326  (38.0s)
+[evolve-ch] gen  12/50  best=9.5781  mean=1.7720  std=3.2116  (37.0s)
+[evolve-ch] gen  13/50  best=13.4931  mean=1.9921  std=3.1950  (36.9s)
+[evolve-ch] gen  14/50  best=12.2101  mean=3.2081  std=3.8116  (37.0s)
+[evolve-ch] gen  15/50  best=15.5445  mean=3.6727  std=4.5096  (36.7s)
+[evolve-ch]   checkpoint -> checkpoints/cha_full/gen_15.npz
+[evolve-ch] gen  16/50  best=9.7207  mean=2.1178  std=4.2747  (36.3s)
+[evolve-ch] gen  17/50  best=18.6633  mean=4.0394  std=5.0708  (36.9s)
+[evolve-ch] gen  18/50  best=9.8721  mean=1.7818  std=3.0573  (36.7s)
+[evolve-ch] gen  19/50  best=12.3815  mean=3.3323  std=3.7632  (36.5s)
+[evolve-ch] gen  20/50  best=14.4450  mean=2.5351  std=4.8173  (36.9s)
+[evolve-ch]   checkpoint -> checkpoints/cha_full/gen_20.npz
+[evolve-ch] gen  21/50  best=13.7743  mean=2.1220  std=5.0109  (37.3s)
+[evolve-ch] gen  22/50  best=13.3829  mean=2.6516  std=5.2947  (36.5s)
+[evolve-ch] gen  23/50  best=17.5293  mean=2.7387  std=5.4101  (36.8s)
+[evolve-ch] gen  24/50  best=18.8945  mean=2.1363  std=7.1380  (36.6s)
+[evolve-ch] gen  25/50  best=15.8297  mean=3.6046  std=5.2852  (37.3s)
+[evolve-ch]   checkpoint -> checkpoints/cha_full/gen_25.npz
+[evolve-ch] gen  26/50  best=14.6343  mean=3.0765  std=4.9908  (37.2s)
+[evolve-ch] gen  27/50  best=12.0283  mean=2.6799  std=5.0128  (36.5s)
+[evolve-ch] gen  28/50  best=14.7513  mean=4.4617  std=5.4394  (36.8s)
+[evolve-ch] gen  29/50  best=18.4341  mean=4.4607  std=5.0815  (39.9s)
+[evolve-ch] gen  30/50  best=18.4188  mean=4.0706  std=5.9550  (37.3s)
+[evolve-ch]   checkpoint -> checkpoints/cha_full/gen_30.npz
+[evolve-ch] gen  31/50  best=8.8493  mean=3.2178  std=3.9147  (36.1s)
+[evolve-ch] gen  32/50  best=15.3272  mean=3.7104  std=5.7316  (35.6s)
+[evolve-ch] gen  33/50  best=15.4186  mean=4.6683  std=4.5628  (36.7s)
+[evolve-ch] gen  34/50  best=21.0784  mean=5.9605  std=6.4171  (35.7s)
+[evolve-ch] gen  35/50  best=15.3469  mean=3.2005  std=5.7356  (35.9s)
+[evolve-ch]   checkpoint -> checkpoints/cha_full/gen_35.npz
+[evolve-ch] gen  36/50  best=14.3771  mean=2.0644  std=5.8897  (35.5s)
+[evolve-ch] gen  37/50  best=13.7768  mean=3.3562  std=4.0688  (36.0s)
+[evolve-ch] gen  38/50  best=15.5183  mean=4.5034  std=6.1505  (36.1s)
+[evolve-ch] gen  39/50  best=14.0168  mean=3.5375  std=4.5678  (35.9s)
+[evolve-ch] gen  40/50  best=12.2451  mean=2.9789  std=3.7193  (36.2s)
+[evolve-ch]   checkpoint -> checkpoints/cha_full/gen_40.npz
+[evolve-ch] gen  41/50  best=11.6586  mean=3.5233  std=4.6652  (35.7s)
+[evolve-ch] gen  42/50  best=17.6495  mean=3.7077  std=4.6687  (35.9s)
+[evolve-ch] gen  43/50  best=12.1953  mean=3.8211  std=3.5154  (35.8s)
+[evolve-ch] gen  44/50  best=14.3186  mean=1.4023  std=6.1688  (35.6s)
+[evolve-ch] gen  45/50  best=12.0250  mean=3.4778  std=5.5074  (35.5s)
+[evolve-ch]   checkpoint -> checkpoints/cha_full/gen_45.npz
+[evolve-ch] gen  46/50  best=16.6365  mean=4.7200  std=5.5112  (36.1s)
+[evolve-ch] gen  47/50  best=10.9670  mean=3.7637  std=4.3957  (35.9s)
+[evolve-ch] gen  48/50  best=14.1781  mean=4.8386  std=4.2627  (36.9s)
+[evolve-ch] gen  49/50  best=16.7258  mean=3.8453  std=5.5846  (35.7s)
+[evolve-ch] gen  50/50  best=14.2274  mean=4.0658  std=4.5964  (35.4s)
+[evolve-ch]   checkpoint -> checkpoints/cha_full/gen_50.npz
+[run] done. best_fit=21.0784  ckpts -> checkpoints/cha_full
+[run] final best per-azimuth diagnostics:
+      az            src     d0   dend   dmin   appr reach    dyaw   sig0 sigMax
+       0         (18,0)   17.4   30.9    0.4   17.1  True  -1.126  0.000  0.279
+      90         (0,18)   18.0    2.0    2.0   16.0  True  -2.813  0.074  0.246
+     270       (-0,-18)   18.0    7.1    0.5   17.5  True  +0.716  0.074  0.283

@@ -1,0 +1,778 @@
+{
+  "grid": [
+    {
+      "distance": 12.0,
+      "lambda": 8.0,
+      "reach_radius": 3.0,
+      "ahead_reached": true,
+      "ahead_min_dist": 0.39020028325663053,
+      "offaxis_reached_frac": 0.0,
+      "offaxis_mean_approach": -62.71531636209364,
+      "mean_signal_max": 0.047565861579160436,
+      "mean_signal_start": 0.01639283567328407,
+      "walk_dx": -46.9463084337583,
+      "rows": [
+        {
+          "azimuth_deg": 0.0,
+          "source_xy": [
+            12.0,
+            0.0
+          ],
+          "fitness": -39.3303084337583,
+          "d_start": 11.420781647320219,
+          "d_end": 58.367090081078516,
+          "min_dist": 0.39020028325663053,
+          "approach": -46.9463084337583,
+          "reached": true,
+          "steps_to_reach": 72,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 3.571087763276637e-07,
+          "signal_max": 0.11493627322291844
+        },
+        {
+          "azimuth_deg": 90.0,
+          "source_xy": [
+            7.347880794884119e-16,
+            12.0
+          ],
+          "fitness": -61.8991570206571,
+          "d_start": 12.013938321422854,
+          "d_end": 69.91309534207996,
+          "min_dist": 12.013938321422854,
+          "approach": -57.8991570206571,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 0.0327856336877983,
+          "signal_max": 0.0327856336877983
+        },
+        {
+          "azimuth_deg": 180.0,
+          "source_xy": [
+            -12.0,
+            1.4695761589768238e-15
+          ],
+          "fitness": -73.62354346509663,
+          "d_start": 12.579218352767986,
+          "d_end": 82.20276181786461,
+          "min_dist": 12.445063708300157,
+          "approach": -69.62354346509663,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 6.582668451993179e-08,
+          "signal_max": 0.007337694044693116
+        },
+        {
+          "azimuth_deg": 270.0,
+          "source_xy": [
+            -2.204364238465236e-15,
+            -12.0
+          ],
+          "fitness": -64.62324860052719,
+          "d_start": 12.014003238364335,
+          "d_end": 72.63725183889153,
+          "min_dist": 11.645995052726663,
+          "approach": -60.62324860052719,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 0.03278528606987713,
+          "signal_max": 0.03520384536123189
+        }
+      ]
+    },
+    {
+      "distance": 12.0,
+      "lambda": 12.0,
+      "reach_radius": 3.0,
+      "ahead_reached": true,
+      "ahead_min_dist": 0.39020028325663053,
+      "offaxis_reached_frac": 0.0,
+      "offaxis_mean_approach": -62.71531636209364,
+      "mean_signal_max": 0.040318772730325206,
+      "mean_signal_start": 0.018086917819464574,
+      "walk_dx": -46.9463084337583,
+      "rows": [
+        {
+          "azimuth_deg": 0.0,
+          "source_xy": [
+            12.0,
+            0.0
+          ],
+          "fitness": -39.3303084337583,
+          "d_start": 11.420781647320219,
+          "d_end": 58.367090081078516,
+          "min_dist": 0.39020028325663053,
+          "approach": -46.9463084337583,
+          "reached": true,
+          "steps_to_reach": 72,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 3.6778321627073396e-07,
+          "signal_max": 0.07854003666432485
+        },
+        {
+          "azimuth_deg": 90.0,
+          "source_xy": [
+            7.347880794884119e-16,
+            12.0
+          ],
+          "fitness": -61.8991570206571,
+          "d_start": 12.013938321422854,
+          "d_end": 69.91309534207996,
+          "min_dist": 12.013938321422854,
+          "approach": -57.8991570206571,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 0.03617374851354832,
+          "signal_max": 0.03617374851354832
+        },
+        {
+          "azimuth_deg": 180.0,
+          "source_xy": [
+            -12.0,
+            1.4695761589768238e-15
+          ],
+          "fitness": -73.62354346509663,
+          "d_start": 12.579218352767986,
+          "d_end": 82.20276181786461,
+          "min_dist": 12.445063708300157,
+          "approach": -69.62354346509663,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 7.731693385526484e-08,
+          "signal_max": 0.008590700156399345
+        },
+        {
+          "azimuth_deg": 270.0,
+          "source_xy": [
+            -2.204364238465236e-15,
+            -12.0
+          ],
+          "fitness": -64.62324860052719,
+          "d_start": 12.014003238364335,
+          "d_end": 72.63725183889153,
+          "min_dist": 11.645995052726663,
+          "approach": -60.62324860052719,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 0.03617347766415985,
+          "signal_max": 0.037970605587028305
+        }
+      ]
+    },
+    {
+      "distance": 12.0,
+      "lambda": 20.0,
+      "reach_radius": 3.0,
+      "ahead_reached": true,
+      "ahead_min_dist": 0.39020028325663053,
+      "offaxis_reached_frac": 0.0,
+      "offaxis_mean_approach": -62.71531636209364,
+      "mean_signal_max": 0.03054000475798202,
+      "mean_signal_start": 0.01624131588299041,
+      "walk_dx": -46.9463084337583,
+      "rows": [
+        {
+          "azimuth_deg": 0.0,
+          "source_xy": [
+            12.0,
+            0.0
+          ],
+          "fitness": -39.3303084337583,
+          "d_start": 11.420781647320219,
+          "d_end": 58.367090081078516,
+          "min_dist": 0.39020028325663053,
+          "approach": -46.9463084337583,
+          "reached": true,
+          "steps_to_reach": 72,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 3.1249945919853417e-07,
+          "signal_max": 0.04806920349085719
+        },
+        {
+          "azimuth_deg": 90.0,
+          "source_xy": [
+            7.347880794884119e-16,
+            12.0
+          ],
+          "fitness": -61.8991570206571,
+          "d_start": 12.013938321422854,
+          "d_end": 69.91309534207996,
+          "min_dist": 12.013938321422854,
+          "approach": -57.8991570206571,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 0.032482520161428496,
+          "signal_max": 0.032482520161428496
+        },
+        {
+          "azimuth_deg": 180.0,
+          "source_xy": [
+            -12.0,
+            1.4695761589768238e-15
+          ],
+          "fitness": -73.62354346509663,
+          "d_start": 12.579218352767986,
+          "d_end": 82.20276181786461,
+          "min_dist": 12.445063708300157,
+          "approach": -69.62354346509663,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 7.297884629942075e-08,
+          "signal_max": 0.008087840182793848
+        },
+        {
+          "azimuth_deg": 270.0,
+          "source_xy": [
+            -2.204364238465236e-15,
+            -12.0
+          ],
+          "fitness": -64.62324860052719,
+          "d_start": 12.014003238364335,
+          "d_end": 72.63725183889153,
+          "min_dist": 11.645995052726663,
+          "approach": -60.62324860052719,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 0.03248235789222764,
+          "signal_max": 0.03352045519684854
+        }
+      ]
+    },
+    {
+      "distance": 18.0,
+      "lambda": 8.0,
+      "reach_radius": 3.0,
+      "ahead_reached": true,
+      "ahead_min_dist": 2.226757466181943,
+      "offaxis_reached_frac": 0.0,
+      "offaxis_mean_approach": -59.533838191840545,
+      "mean_signal_max": 0.03709071278514763,
+      "mean_signal_start": 0.007814130309843518,
+      "walk_dx": -35.01082135169597,
+      "rows": [
+        {
+          "azimuth_deg": 0.0,
+          "source_xy": [
+            18.0,
+            0.0
+          ],
+          "fitness": -27.8801546850293,
+          "d_start": 17.420781647304295,
+          "d_end": 52.43160299900026,
+          "min_dist": 2.226757466181943,
+          "approach": -35.01082135169597,
+          "reached": true,
+          "steps_to_reach": 163,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 1.4359611130720928e-07,
+          "signal_max": 0.11247770716757677
+        },
+        {
+          "azimuth_deg": 90.0,
+          "source_xy": [
+            1.102182119232618e-15,
+            18.0
+          ],
+          "fitness": -56.494322166762004,
+          "d_start": 18.009284384334475,
+          "d_end": 70.50360655109648,
+          "min_dist": 18.009284384334475,
+          "approach": -52.494322166762004,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 0.01562824794858239,
+          "signal_max": 0.01562824794858239
+        },
+        {
+          "azimuth_deg": 180.0,
+          "source_xy": [
+            -18.0,
+            2.204364238465236e-15
+          ],
+          "fitness": -73.59639200505677,
+          "d_start": 18.57921835275443,
+          "d_end": 88.1756103578112,
+          "min_dist": 18.444853881875122,
+          "approach": -69.59639200505677,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 4.21413573620244e-08,
+          "signal_max": 0.003641553367124753
+        },
+        {
+          "azimuth_deg": 270.0,
+          "source_xy": [
+            -3.3065463576978533e-15,
+            -18.0
+          ],
+          "fitness": -60.51080040370285,
+          "d_start": 18.009349343231356,
+          "d_end": 74.52014974693421,
+          "min_dist": 17.55306662294989,
+          "approach": -56.51080040370285,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 0.01562808755332301,
+          "signal_max": 0.016615342657306603
+        }
+      ]
+    },
+    {
+      "distance": 18.0,
+      "lambda": 12.0,
+      "reach_radius": 3.0,
+      "ahead_reached": true,
+      "ahead_min_dist": 2.226757466181943,
+      "offaxis_reached_frac": 0.0,
+      "offaxis_mean_approach": -59.533838191840545,
+      "mean_signal_max": 0.0332440606134876,
+      "mean_signal_start": 0.011054479999861908,
+      "walk_dx": -35.01082135169597,
+      "rows": [
+        {
+          "azimuth_deg": 0.0,
+          "source_xy": [
+            18.0,
+            0.0
+          ],
+          "fitness": -27.8801546850293,
+          "d_start": 17.420781647304295,
+          "d_end": 52.43160299900026,
+          "min_dist": 2.226757466181943,
+          "approach": -35.01082135169597,
+          "reached": true,
+          "steps_to_reach": 163,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 1.8984259647636392e-07,
+          "signal_max": 0.0823756730502192
+        },
+        {
+          "azimuth_deg": 90.0,
+          "source_xy": [
+            1.102182119232618e-15,
+            18.0
+          ],
+          "fitness": -56.494322166762004,
+          "d_start": 18.009284384334475,
+          "d_end": 70.50360655109648,
+          "min_dist": 18.009284384334475,
+          "approach": -52.494322166762004,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 0.022108912170442307,
+          "signal_max": 0.022108912170442307
+        },
+        {
+          "azimuth_deg": 180.0,
+          "source_xy": [
+            -18.0,
+            2.204364238465236e-15
+          ],
+          "fitness": -73.59639200505677,
+          "d_start": 18.57921835275443,
+          "d_end": 88.1756103578112,
+          "min_dist": 18.444853881875122,
+          "approach": -69.59639200505677,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 6.354499543226311e-08,
+          "signal_max": 0.0054724891618081195
+        },
+        {
+          "azimuth_deg": 270.0,
+          "source_xy": [
+            -3.3065463576978533e-15,
+            -18.0
+          ],
+          "fitness": -60.51080040370285,
+          "d_start": 18.009349343231356,
+          "d_end": 74.52014974693421,
+          "min_dist": 17.55306662294989,
+          "approach": -56.51080040370285,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 0.022108754441413414,
+          "signal_max": 0.023019168071480772
+        }
+      ]
+    },
+    {
+      "distance": 18.0,
+      "lambda": 20.0,
+      "reach_radius": 3.0,
+      "ahead_reached": true,
+      "ahead_min_dist": 2.226757466181943,
+      "offaxis_reached_frac": 0.0,
+      "offaxis_mean_approach": -59.533838191840545,
+      "mean_signal_max": 0.02716969664554726,
+      "mean_signal_start": 0.012110256156048715,
+      "walk_dx": -35.01082135169597,
+      "rows": [
+        {
+          "azimuth_deg": 0.0,
+          "source_xy": [
+            18.0,
+            0.0
+          ],
+          "fitness": -27.8801546850293,
+          "d_start": 17.420781647304295,
+          "d_end": 52.43160299900026,
+          "min_dist": 2.226757466181943,
+          "approach": -35.01082135169597,
+          "reached": true,
+          "steps_to_reach": 163,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 1.9697844816368715e-07,
+          "signal_max": 0.05335350087542989
+        },
+        {
+          "azimuth_deg": 90.0,
+          "source_xy": [
+            1.102182119232618e-15,
+            18.0
+          ],
+          "fitness": -56.494322166762004,
+          "d_start": 18.009284384334475,
+          "d_end": 70.50360655109648,
+          "min_dist": 18.009284384334475,
+          "approach": -52.494322166762004,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 0.024220433283666465,
+          "signal_max": 0.024220433283666465
+        },
+        {
+          "azimuth_deg": 180.0,
+          "source_xy": [
+            -18.0,
+            2.204364238465236e-15
+          ],
+          "fitness": -73.59639200505677,
+          "d_start": 18.57921835275443,
+          "d_end": 88.1756103578112,
+          "min_dist": 18.444853881875122,
+          "approach": -69.59639200505677,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 7.32493671273815e-08,
+          "signal_max": 0.006291189838394551
+        },
+        {
+          "azimuth_deg": 270.0,
+          "source_xy": [
+            -3.3065463576978533e-15,
+            -18.0
+          ],
+          "fitness": -60.51080040370285,
+          "d_start": 18.009349343231356,
+          "d_end": 74.52014974693421,
+          "min_dist": 17.55306662294989,
+          "approach": -56.51080040370285,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 0.024220321112713106,
+          "signal_max": 0.024813662584698137
+        }
+      ]
+    },
+    {
+      "distance": 25.0,
+      "lambda": 8.0,
+      "reach_radius": 3.0,
+      "ahead_reached": true,
+      "ahead_min_dist": 2.789290116136634,
+      "offaxis_reached_frac": 0.0,
+      "offaxis_mean_approach": -56.209326739547045,
+      "mean_signal_max": 0.030311398286846022,
+      "mean_signal_start": 0.0032713505603332027,
+      "walk_dx": -21.107466869152784,
+      "rows": [
+        {
+          "azimuth_deg": 0.0,
+          "source_xy": [
+            25.0,
+            0.0
+          ],
+          "fitness": -14.163466869152785,
+          "d_start": 24.42078164729561,
+          "d_end": 45.52824851644839,
+          "min_dist": 2.789290116136634,
+          "approach": -21.107466869152784,
+          "reached": true,
+          "steps_to_reach": 198,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 5.440633734504763e-08,
+          "signal_max": 0.10621629591216519
+        },
+        {
+          "azimuth_deg": 90.0,
+          "source_xy": [
+            1.5308084989341915e-15,
+            25.0
+          ],
+          "fitness": -50.815992488138804,
+          "d_start": 25.00667649025345,
+          "d_end": 71.82266897839226,
+          "min_dist": 25.00667649025345,
+          "approach": -46.815992488138804,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 0.006542696618077243,
+          "signal_max": 0.006542696618077243
+        },
+        {
+          "azimuth_deg": 180.0,
+          "source_xy": [
+            -25.0,
+            3.061616997868383e-15
+          ],
+          "fitness": -73.5690335599492,
+          "d_start": 25.579218352746654,
+          "d_end": 95.14825191269586,
+          "min_dist": 25.444734152285363,
+          "approach": -69.5690335599492,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 2.0314643897623164e-08,
+          "signal_max": 0.0015613481470451163
+        },
+        {
+          "azimuth_deg": 270.0,
+          "source_xy": [
+            -4.592425496802574e-15,
+            -25.0
+          ],
+          "fitness": -56.24295417055312,
+          "d_start": 25.006741465336635,
+          "d_end": 77.24969563588975,
+          "min_dist": 24.498788889630678,
+          "approach": -52.24295417055312,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 0.006542630902274325,
+          "signal_max": 0.006925252470096531
+        }
+      ]
+    },
+    {
+      "distance": 25.0,
+      "lambda": 12.0,
+      "reach_radius": 3.0,
+      "ahead_reached": true,
+      "ahead_min_dist": 2.789290116136634,
+      "offaxis_reached_frac": 0.0,
+      "offaxis_mean_approach": -56.209326739547045,
+      "mean_signal_max": 0.02694626372684438,
+      "mean_signal_start": 0.006190173294892316,
+      "walk_dx": -21.107466869152784,
+      "rows": [
+        {
+          "azimuth_deg": 0.0,
+          "source_xy": [
+            25.0,
+            0.0
+          ],
+          "fitness": -14.163466869152785,
+          "d_start": 24.42078164729561,
+          "d_end": 45.52824851644839,
+          "min_dist": 2.789290116136634,
+          "approach": -21.107466869152784,
+          "reached": true,
+          "steps_to_reach": 198,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 9.62743195720428e-08,
+          "signal_max": 0.07942807975544075
+        },
+        {
+          "azimuth_deg": 90.0,
+          "source_xy": [
+            1.5308084989341915e-15,
+            25.0
+          ],
+          "fitness": -50.815992488138804,
+          "d_start": 25.00667649025345,
+          "d_end": 71.82266897839226,
+          "min_dist": 25.00667649025345,
+          "approach": -46.815992488138804,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 0.012380320725317404,
+          "signal_max": 0.012380320725317404
+        },
+        {
+          "azimuth_deg": 180.0,
+          "source_xy": [
+            -25.0,
+            3.061616997868383e-15
+          ],
+          "fitness": -73.5690335599492,
+          "d_start": 25.579218352746654,
+          "d_end": 95.14825191269586,
+          "min_dist": 25.444734152285363,
+          "approach": -69.5690335599492,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 4.100223029157579e-08,
+          "signal_max": 0.00314037715752484
+        },
+        {
+          "azimuth_deg": 270.0,
+          "source_xy": [
+            -4.592425496802574e-15,
+            -25.0
+          ],
+          "fitness": -56.24295417055312,
+          "d_start": 25.006741465336635,
+          "d_end": 77.24969563588975,
+          "min_dist": 24.498788889630678,
+          "approach": -52.24295417055312,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 0.012380235177701995,
+          "signal_max": 0.012836277269094531
+        }
+      ]
+    },
+    {
+      "distance": 25.0,
+      "lambda": 20.0,
+      "reach_radius": 3.0,
+      "ahead_reached": true,
+      "ahead_min_dist": 2.789290116136634,
+      "offaxis_reached_frac": 0.0,
+      "offaxis_mean_approach": -56.209326739547045,
+      "mean_signal_max": 0.022851207704575174,
+      "mean_signal_start": 0.008558004271199682,
+      "walk_dx": -21.107466869152784,
+      "rows": [
+        {
+          "azimuth_deg": 0.0,
+          "source_xy": [
+            25.0,
+            0.0
+          ],
+          "fitness": -14.163466869152785,
+          "d_start": 24.42078164729561,
+          "d_end": 45.52824851644839,
+          "min_dist": 2.789290116136634,
+          "approach": -21.107466869152784,
+          "reached": true,
+          "steps_to_reach": 198,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 1.2613147948314918e-07,
+          "signal_max": 0.052250416434898694
+        },
+        {
+          "azimuth_deg": 90.0,
+          "source_xy": [
+            1.5308084989341915e-15,
+            25.0
+          ],
+          "fitness": -50.815992488138804,
+          "d_start": 25.00667649025345,
+          "d_end": 71.82266897839226,
+          "min_dist": 25.00667649025345,
+          "approach": -46.815992488138804,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 0.017115953315692656,
+          "signal_max": 0.017115953315692656
+        },
+        {
+          "azimuth_deg": 180.0,
+          "source_xy": [
+            -25.0,
+            3.061616997868383e-15
+          ],
+          "fitness": -73.5690335599492,
+          "d_start": 25.579218352746654,
+          "d_end": 95.14825191269586,
+          "min_dist": 25.444734152285363,
+          "approach": -69.5690335599492,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 5.968021127289447e-08,
+          "signal_max": 0.004558238410135307
+        },
+        {
+          "azimuth_deg": 270.0,
+          "source_xy": [
+            -4.592425496802574e-15,
+            -25.0
+          ],
+          "fitness": -56.24295417055312,
+          "d_start": 25.006741465336635,
+          "d_end": 77.24969563588975,
+          "min_dist": 24.498788889630678,
+          "approach": -52.24295417055312,
+          "reached": false,
+          "steps_to_reach": 750,
+          "n_below": 0,
+          "dyaw_final": 0.3927421864465728,
+          "signal_start": 0.017115877957415315,
+          "signal_max": 0.01748022265757404
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,632 @@
+{
+  "config": {
+    "source_distance": 18.0,
+    "odor_lambda": 12.0,
+    "reach_radius": 3.0,
+    "obstacle_radius": 2.0,
+    "feeler_range": 6.0,
+    "feeler_input_gain": 8.0,
+    "w_collide": 0.2,
+    "reach_bonus": 8.0,
+    "time_penalty": 4.0,
+    "rollout_steps": 1000,
+    "conditions": [
+      {
+        "name": "g40_near_block_left",
+        "goal_xy": [
+          13.788799976141604,
+          11.570176974357707
+        ],
+        "obstacle_xy": [
+          10.998889178085815,
+          4.538898448570609
+        ],
+        "block_side": 1.0
+      },
+      {
+        "name": "g40_near_block_right",
+        "goal_xy": [
+          13.788799976141604,
+          11.570176974357707
+        ],
+        "obstacle_xy": [
+          13.0704810872681,
+          1.5946656177960954
+        ],
+        "block_side": -1.0
+      },
+      {
+        "name": "g40_far_block_left",
+        "goal_xy": [
+          13.788799976141604,
+          11.570176974357707
+        ],
+        "obstacle_xy": [
+          13.281252174817833,
+          5.161667522249362
+        ],
+        "block_side": 1.0
+      },
+      {
+        "name": "g40_far_block_right",
+        "goal_xy": [
+          13.788799976141604,
+          11.570176974357707
+        ],
+        "obstacle_xy": [
+          15.800348761424495,
+          2.589868076851907
+        ],
+        "block_side": -1.0
+      }
+    ]
+  },
+  "gate1_ab": {
+    "nca_ab_max_abs_delta": 0.0,
+    "feeler_on_at_warmstart_delta": 0.0,
+    "env_ab_fitness_delta": 0.0,
+    "env_ab_trajectory_max_delta": 0.0,
+    "no_obstacle_reached_goal": true,
+    "no_obstacle_d_end": 11.441572761470853,
+    "n_params": 1524
+  },
+  "gate2_baseline": {
+    "collide_rate": 1.0,
+    "reach_rate": 1.0,
+    "feeler_cue_correctly_signed": true,
+    "rows": [
+      {
+        "name": "g40_near_block_left",
+        "goal_xy": [
+          13.788799976141604,
+          11.570176974357707
+        ],
+        "obstacle_xy": [
+          10.998889178085815,
+          4.538898448570609
+        ],
+        "block_side": 1.0,
+        "fitness": -0.7731127874056409,
+        "approach": 16.24688721259436,
+        "d_start": 17.56022057429033,
+        "min_dist": 1.3133333616959697,
+        "reached": true,
+        "collision_count": 110,
+        "collided": true,
+        "n_below": 0,
+        "forward_dx": 10.853207360715926,
+        "detour_perp": 1.3841018535170893,
+        "feeler_peak": 1.0,
+        "feeler_mean_LmR": 0.44492302572936265
+      },
+      {
+        "name": "g40_near_block_right",
+        "goal_xy": [
+          13.788799976141604,
+          11.570176974357707
+        ],
+        "obstacle_xy": [
+          13.0704810872681,
+          1.5946656177960954
+        ],
+        "block_side": -1.0,
+        "fitness": 6.0268872125943584,
+        "approach": 16.24688721259436,
+        "d_start": 17.56022057429033,
+        "min_dist": 1.3133333616959697,
+        "reached": true,
+        "collision_count": 76,
+        "collided": true,
+        "n_below": 0,
+        "forward_dx": 10.853207360715926,
+        "detour_perp": -0.3701806274013298,
+        "feeler_peak": 1.0,
+        "feeler_mean_LmR": -0.02718796771773873
+      },
+      {
+        "name": "g40_far_block_left",
+        "goal_xy": [
+          13.788799976141604,
+          11.570176974357707
+        ],
+        "obstacle_xy": [
+          13.281252174817833,
+          5.161667522249362
+        ],
+        "block_side": 1.0,
+        "fitness": -5.373112787405642,
+        "approach": 16.24688721259436,
+        "d_start": 17.56022057429033,
+        "min_dist": 1.3133333616959697,
+        "reached": true,
+        "collision_count": 133,
+        "collided": true,
+        "n_below": 0,
+        "forward_dx": 10.853207360715926,
+        "detour_perp": -0.19088132079470121,
+        "feeler_peak": 1.0,
+        "feeler_mean_LmR": 0.3803469683897632
+      },
+      {
+        "name": "g40_far_block_right",
+        "goal_xy": [
+          13.788799976141604,
+          11.570176974357707
+        ],
+        "obstacle_xy": [
+          15.800348761424495,
+          2.589868076851907
+        ],
+        "block_side": -1.0,
+        "fitness": 10.626887212594358,
+        "approach": 16.24688721259436,
+        "d_start": 17.56022057429033,
+        "min_dist": 1.3133333616959697,
+        "reached": true,
+        "collision_count": 53,
+        "collided": true,
+        "n_below": 0,
+        "forward_dx": 10.853207360715926,
+        "detour_perp": -0.3134028428891636,
+        "feeler_peak": 1.0,
+        "feeler_mean_LmR": -0.08720599035631543
+      }
+    ]
+  },
+  "gate3_parallel": {
+    "n_individuals": 12,
+    "workers": 8,
+    "t_sequential_s": 135.45209754200187,
+    "t_parallel_s": 52.31758987496141,
+    "speedup": 2.589035501553707,
+    "max_abs_fitness_diff": 0.0,
+    "fitness_sample": [
+      -7.401895349257465,
+      -11.37269758157581,
+      12.597515866526123,
+      -5.002291075073293,
+      -11.685295297620325
+    ]
+  },
+  "gate4_detour": {
+    "n_samples": 48,
+    "sigma": 0.5,
+    "n_both_sides_correct": 0,
+    "both_sides_detour_achievable": false,
+    "best": null,
+    "samples": [
+      {
+        "sample": 0,
+        "score": -8.765505760343387,
+        "left_block_detour_perp": 2.0225043657520443,
+        "right_block_detour_perp": 0.5981199686597921,
+        "left_block_collisions": 208,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 1,
+        "score": -29.311125371903017,
+        "left_block_detour_perp": 0.5398232465244429,
+        "right_block_detour_perp": 0.34373624757077975,
+        "left_block_collisions": 0,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 2,
+        "score": -8.517007351953307,
+        "left_block_detour_perp": 2.7199173085312824,
+        "right_block_detour_perp": -0.28692371729308475,
+        "left_block_collisions": 0,
+        "right_block_collisions": 13,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 3,
+        "score": -5.614040264910382,
+        "left_block_detour_perp": 3.6856171578270107,
+        "right_block_detour_perp": -0.7626447165491307,
+        "left_block_collisions": 0,
+        "right_block_collisions": 127,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 4,
+        "score": -16.396744267409222,
+        "left_block_detour_perp": 1.4793386894768588,
+        "right_block_detour_perp": -0.35372100060544726,
+        "left_block_collisions": 13,
+        "right_block_collisions": 95,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 5,
+        "score": 10.480886483786193,
+        "left_block_detour_perp": 3.235288520298374,
+        "right_block_detour_perp": 0.48420814778620636,
+        "left_block_collisions": 0,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 6,
+        "score": -16.234172467415892,
+        "left_block_detour_perp": 2.4242054154840225,
+        "right_block_detour_perp": 0.6566886220022977,
+        "left_block_collisions": 0,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 7,
+        "score": -6.133407797610648,
+        "left_block_detour_perp": 0.3578016300227028,
+        "right_block_detour_perp": 2.626435017959861,
+        "left_block_collisions": 0,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 8,
+        "score": -18.18610291321001,
+        "left_block_detour_perp": -0.16100750098255612,
+        "right_block_detour_perp": -1.4457135043757539,
+        "left_block_collisions": 4,
+        "right_block_collisions": 234,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 9,
+        "score": -30.6665963872572,
+        "left_block_detour_perp": 6.086615169932205,
+        "right_block_detour_perp": 0.6244318474743542,
+        "left_block_collisions": 0,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 10,
+        "score": -7.509502611448885,
+        "left_block_detour_perp": 0.9095056149828106,
+        "right_block_detour_perp": 0.42661742951251974,
+        "left_block_collisions": 144,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 11,
+        "score": -4.358110316491826,
+        "left_block_detour_perp": 2.8236919409923575,
+        "right_block_detour_perp": -2.141271991561836,
+        "left_block_collisions": 103,
+        "right_block_collisions": 35,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 12,
+        "score": -26.420611253752316,
+        "left_block_detour_perp": 3.3366520448520234,
+        "right_block_detour_perp": 1.8415198314753174,
+        "left_block_collisions": 32,
+        "right_block_collisions": 396,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 13,
+        "score": 1.2117844048963442,
+        "left_block_detour_perp": 0.5351126419916546,
+        "right_block_detour_perp": 1.5042373833507618,
+        "left_block_collisions": 0,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 14,
+        "score": -12.21430719185551,
+        "left_block_detour_perp": 3.2169594981508634,
+        "right_block_detour_perp": 1.3982142852927084,
+        "left_block_collisions": 0,
+        "right_block_collisions": 342,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 15,
+        "score": -9.118439265339779,
+        "left_block_detour_perp": 1.5408445375824857,
+        "right_block_detour_perp": -0.9124793974672947,
+        "left_block_collisions": 281,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 16,
+        "score": -17.97478491110087,
+        "left_block_detour_perp": 2.6593174343608577,
+        "right_block_detour_perp": 1.1096258624488562,
+        "left_block_collisions": 0,
+        "right_block_collisions": 1,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 17,
+        "score": -3.9093224426986453,
+        "left_block_detour_perp": 0.45143559600884964,
+        "right_block_detour_perp": -0.027984944080449655,
+        "left_block_collisions": 211,
+        "right_block_collisions": 53,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 18,
+        "score": -0.19066196280811631,
+        "left_block_detour_perp": -1.7104676890401327,
+        "right_block_detour_perp": -1.2371497654291856,
+        "left_block_collisions": 28,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 19,
+        "score": 1.6248897438823997,
+        "left_block_detour_perp": 2.5624128240990203,
+        "right_block_detour_perp": -0.24541473607451353,
+        "left_block_collisions": 0,
+        "right_block_collisions": 40,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 20,
+        "score": 8.49718328529419,
+        "left_block_detour_perp": 6.540329243048123,
+        "right_block_detour_perp": 0.2180361574442258,
+        "left_block_collisions": 0,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 21,
+        "score": -13.77715808627104,
+        "left_block_detour_perp": 2.1584120468130172,
+        "right_block_detour_perp": 1.4740304095630499,
+        "left_block_collisions": 0,
+        "right_block_collisions": 21,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 22,
+        "score": 15.999616155053724,
+        "left_block_detour_perp": 3.6280474138898495,
+        "right_block_detour_perp": 1.7954650936719032,
+        "left_block_collisions": 0,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 23,
+        "score": 7.694818746819899,
+        "left_block_detour_perp": 4.092509774491208,
+        "right_block_detour_perp": 0.050263381361185584,
+        "left_block_collisions": 0,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 24,
+        "score": 5.762849473717706,
+        "left_block_detour_perp": 1.3052450167941048,
+        "right_block_detour_perp": 0.5088402404155429,
+        "left_block_collisions": 53,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 25,
+        "score": 5.428711876752828,
+        "left_block_detour_perp": 0.7216812292723209,
+        "right_block_detour_perp": 0.3952421219731137,
+        "left_block_collisions": 33,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 26,
+        "score": -94.20203700359147,
+        "left_block_detour_perp": 3.254090058378744,
+        "right_block_detour_perp": 1.8763469940643254,
+        "left_block_collisions": 773,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 27,
+        "score": 12.253200960108208,
+        "left_block_detour_perp": 2.7499952350197017,
+        "right_block_detour_perp": 1.875660618474901,
+        "left_block_collisions": 0,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 28,
+        "score": -0.3806379735923153,
+        "left_block_detour_perp": 1.433735017305216,
+        "right_block_detour_perp": -0.579233264658352,
+        "left_block_collisions": 26,
+        "right_block_collisions": 169,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 29,
+        "score": -6.578537723400015,
+        "left_block_detour_perp": 0.4464089590274396,
+        "right_block_detour_perp": 3.1807974109532196,
+        "left_block_collisions": 0,
+        "right_block_collisions": 164,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 30,
+        "score": -7.564576403655723,
+        "left_block_detour_perp": 1.904111511116511,
+        "right_block_detour_perp": 4.867331460356001,
+        "left_block_collisions": 0,
+        "right_block_collisions": 31,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 31,
+        "score": 1.0600830798054046,
+        "left_block_detour_perp": 2.1022843257379504,
+        "right_block_detour_perp": -1.1091705741183389,
+        "left_block_collisions": 0,
+        "right_block_collisions": 31,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 32,
+        "score": -4.4181867695451364,
+        "left_block_detour_perp": 2.0340601792557393,
+        "right_block_detour_perp": 4.190470351366948,
+        "left_block_collisions": 44,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 33,
+        "score": 0.4317147735202822,
+        "left_block_detour_perp": 2.7115255879200952,
+        "right_block_detour_perp": 2.0693837119757688,
+        "left_block_collisions": 0,
+        "right_block_collisions": 17,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 34,
+        "score": 6.326730230047488,
+        "left_block_detour_perp": 1.008127692478532,
+        "right_block_detour_perp": -1.255353241618533,
+        "left_block_collisions": 12,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 35,
+        "score": -18.870866788444147,
+        "left_block_detour_perp": 1.2417975937953991,
+        "right_block_detour_perp": 0.49281777683000405,
+        "left_block_collisions": 0,
+        "right_block_collisions": 397,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 36,
+        "score": -24.12202686760546,
+        "left_block_detour_perp": 1.5920479743697666,
+        "right_block_detour_perp": 2.0235290576079463,
+        "left_block_collisions": 0,
+        "right_block_collisions": 340,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 37,
+        "score": -30.982570112037678,
+        "left_block_detour_perp": 3.2304757297876,
+        "right_block_detour_perp": -0.43531225562158427,
+        "left_block_collisions": 0,
+        "right_block_collisions": 677,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 38,
+        "score": -7.074160713854226,
+        "left_block_detour_perp": 2.6865226898805266,
+        "right_block_detour_perp": 3.027821551292349,
+        "left_block_collisions": 5,
+        "right_block_collisions": 28,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 39,
+        "score": -35.74085781082671,
+        "left_block_detour_perp": 1.6544729055349587,
+        "right_block_detour_perp": 1.1379167828429326,
+        "left_block_collisions": 25,
+        "right_block_collisions": 522,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 40,
+        "score": 3.765477061673985,
+        "left_block_detour_perp": 2.7206785891074596,
+        "right_block_detour_perp": 1.1167025824855437,
+        "left_block_collisions": 0,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 41,
+        "score": 3.0130383842270687,
+        "left_block_detour_perp": 2.737354137243795,
+        "right_block_detour_perp": -1.3055783622054726,
+        "left_block_collisions": 0,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 42,
+        "score": 1.748612149313718,
+        "left_block_detour_perp": 1.2487253856070861,
+        "right_block_detour_perp": -1.6047096720785112,
+        "left_block_collisions": 0,
+        "right_block_collisions": 44,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 43,
+        "score": 5.558404319968087,
+        "left_block_detour_perp": 4.805015041987055,
+        "right_block_detour_perp": -1.0920938608723745,
+        "left_block_collisions": 0,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 44,
+        "score": 4.724487815437616,
+        "left_block_detour_perp": 3.3490246262390975,
+        "right_block_detour_perp": 0.6584138142435186,
+        "left_block_collisions": 0,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 45,
+        "score": 4.543373021892385,
+        "left_block_detour_perp": 4.598942401513372,
+        "right_block_detour_perp": 1.0235347589253891,
+        "left_block_collisions": 0,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 46,
+        "score": 0.06131413403929109,
+        "left_block_detour_perp": -3.9432827516684403,
+        "right_block_detour_perp": -1.1326190828868985,
+        "left_block_collisions": 0,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      },
+      {
+        "sample": 47,
+        "score": -7.901097147858323,
+        "left_block_detour_perp": 4.871683339790715,
+        "right_block_detour_perp": -0.7557210206665668,
+        "left_block_collisions": 0,
+        "right_block_collisions": 0,
+        "both_sides_correct": false
+      }
+    ]
+  }
+}

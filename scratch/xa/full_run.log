@@ -1,0 +1,72 @@
+[run] gen-0 (warm-start) per-azimuth diagnostics:
+      az   hit   dmin    fwd   awayΔ   early loomPk     L-R     fit
+       0  True   2.22   36.5  -0.000  -0.000  1.000  +0.199    0.33
+      90  True   0.61   36.5  +0.331  +0.045  1.000  +0.193    2.34
+     270  True   1.93   36.5  -0.331  -0.045  1.000  -0.036   -1.37
+[evolve-x] run_id=xa-full  n_params=1236  pop=32 gens=50 sigma=0.2  workers=9  azimuths=(0.0, 90.0, 270.0)  speed=45.0 R=2.0 lead=15.0 hit_r=3.0  start_gen=0 phase=original
+[evolve-x] gen   1/50  best=5.1497  mean=3.0101  std=0.8383  (14.6s)
+[evolve-x] gen   2/50  best=4.2143  mean=2.6126  std=0.9390  (11.9s)
+[evolve-x] gen   3/50  best=5.0098  mean=2.9443  std=0.9660  (12.2s)
+[evolve-x] gen   4/50  best=4.5858  mean=3.1211  std=0.7146  (12.5s)
+[evolve-x] gen   5/50  best=5.0843  mean=2.6416  std=1.1891  (12.7s)
+[evolve-x]   checkpoint -> checkpoints/xa-full/gen_05.npz
+[evolve-x] gen   6/50  best=4.6599  mean=3.3044  std=0.5164  (12.8s)
+[evolve-x] gen   7/50  best=5.1090  mean=3.0991  std=1.0327  (12.8s)
+[evolve-x] gen   8/50  best=5.2643  mean=3.1669  std=0.7117  (12.8s)
+[evolve-x] gen   9/50  best=5.2627  mean=3.1691  std=0.9216  (13.7s)
+[evolve-x] gen  10/50  best=4.5772  mean=3.0926  std=0.8852  (14.0s)
+[evolve-x]   checkpoint -> checkpoints/xa-full/gen_10.npz
+[evolve-x] gen  11/50  best=5.1391  mean=3.2980  std=0.8268  (13.3s)
+[evolve-x] gen  12/50  best=3.9151  mean=2.8168  std=0.9379  (13.1s)
+[evolve-x] gen  13/50  best=5.2058  mean=3.3099  std=0.9591  (13.2s)
+[evolve-x] gen  14/50  best=5.3017  mean=2.9305  std=1.0728  (13.6s)
+[evolve-x] gen  15/50  best=5.6772  mean=3.2253  std=1.5470  (13.5s)
+[evolve-x]   checkpoint -> checkpoints/xa-full/gen_15.npz
+[evolve-x] gen  16/50  best=7.3401  mean=3.2531  std=1.7079  (13.7s)
+[evolve-x] gen  17/50  best=7.2722  mean=3.7022  std=1.5761  (14.1s)
+[evolve-x] gen  18/50  best=8.5731  mean=3.8543  std=1.8210  (13.9s)
+[evolve-x] gen  19/50  best=6.5437  mean=3.6173  std=1.4596  (14.0s)
+[evolve-x] gen  20/50  best=5.9827  mean=3.4672  std=1.8395  (13.9s)
+[evolve-x]   checkpoint -> checkpoints/xa-full/gen_20.npz
+[evolve-x] gen  21/50  best=8.1471  mean=4.2671  std=1.6693  (14.1s)
+[evolve-x] gen  22/50  best=10.6218  mean=4.0765  std=2.2214  (14.1s)
+[evolve-x] gen  23/50  best=10.6834  mean=4.2361  std=2.5524  (13.9s)
+[evolve-x] gen  24/50  best=11.1578  mean=4.4508  std=2.8371  (14.2s)
+[evolve-x] gen  25/50  best=13.0790  mean=4.7164  std=3.4535  (14.3s)
+[evolve-x]   checkpoint -> checkpoints/xa-full/gen_25.npz
+[evolve-x] gen  26/50  best=10.1332  mean=5.7455  std=2.0310  (14.2s)
+[evolve-x] gen  27/50  best=12.2763  mean=5.9089  std=2.4523  (14.1s)
+[evolve-x] gen  28/50  best=12.7552  mean=5.0642  std=3.0310  (14.3s)
+[evolve-x] gen  29/50  best=12.9771  mean=5.8177  std=2.8818  (14.5s)
+[evolve-x] gen  30/50  best=11.0858  mean=5.2374  std=2.9597  (14.6s)
+[evolve-x]   checkpoint -> checkpoints/xa-full/gen_30.npz
+[evolve-x] gen  31/50  best=11.0406  mean=5.4195  std=2.9978  (15.1s)
+[evolve-x] gen  32/50  best=12.5493  mean=5.7619  std=3.2507  (14.5s)
+[evolve-x] gen  33/50  best=13.0539  mean=6.3335  std=3.0477  (14.3s)
+[evolve-x] gen  34/50  best=12.5398  mean=5.2225  std=2.7616  (14.1s)
+[evolve-x] gen  35/50  best=12.6698  mean=6.3560  std=4.2061  (14.8s)
+[evolve-x]   checkpoint -> checkpoints/xa-full/gen_35.npz
+[evolve-x] gen  36/50  best=12.8538  mean=6.2644  std=3.2745  (14.3s)
+[evolve-x] gen  37/50  best=12.1094  mean=5.8711  std=3.4812  (15.0s)
+[evolve-x] gen  38/50  best=12.3317  mean=6.3166  std=3.3184  (14.9s)
+[evolve-x] gen  39/50  best=12.0336  mean=6.4484  std=2.9141  (15.4s)
+[evolve-x] gen  40/50  best=12.3097  mean=6.2871  std=3.3108  (14.7s)
+[evolve-x]   checkpoint -> checkpoints/xa-full/gen_40.npz
+[evolve-x] gen  41/50  best=12.9138  mean=5.8075  std=3.8464  (14.5s)
+[evolve-x] gen  42/50  best=12.7209  mean=5.9960  std=3.5103  (14.4s)
+[evolve-x] gen  43/50  best=12.9719  mean=5.0459  std=3.4219  (14.6s)
+[evolve-x] gen  44/50  best=12.1976  mean=5.5343  std=3.0621  (14.4s)
+[evolve-x] gen  45/50  best=12.7018  mean=6.7917  std=3.1924  (14.5s)
+[evolve-x]   checkpoint -> checkpoints/xa-full/gen_45.npz
+[evolve-x] gen  46/50  best=12.0972  mean=7.1116  std=3.2638  (14.6s)
+[evolve-x] gen  47/50  best=13.1825  mean=6.6917  std=3.0229  (15.5s)
+[evolve-x] gen  48/50  best=12.9132  mean=7.2726  std=3.1052  (15.5s)
+[evolve-x] gen  49/50  best=12.6566  mean=6.6622  std=3.3541  (15.1s)
+[evolve-x] gen  50/50  best=13.2349  mean=7.1581  std=3.9159  (14.6s)
+[evolve-x]   checkpoint -> checkpoints/xa-full/gen_50.npz
+[run] done. best_fit=13.2349  ckpts -> checkpoints/xa-full
+[run] final best per-azimuth diagnostics:
+      az   hit   dmin    fwd   awayΔ   early loomPk     L-R     fit
+       0 False  19.31   11.5  -0.000  -0.000  0.155  +0.057    5.60
+      90 False  19.14   15.3  +2.073  +1.876  0.192  +0.083   17.45
+     270 False  15.07   -5.1  +1.478  +0.752  0.188  -0.108   16.65
