@@ -1,0 +1,4901 @@
+{
+  "meta": {
+    "description": "FlyWire LC4/LPLC2 -> DNp01 (Giant Fiber) escape convergence sub-circuit.",
+    "sources": {
+      "cell_types": "flyconnectome/flywire_annotations Supplemental_file1_neuron_annotations.tsv",
+      "connectivity": "Zenodo 10676866 proofread_connections_783.feather"
+    },
+    "flywire_release": "783",
+    "query_date": "2026-06-22",
+    "edge_definition": "An edge exists iff the (pre,post) pair appears in proofread_connections_783.feather. That file is NOT thresholded: min syn_count observed across all 16847997 rows = 1, so an edge here means >=1 synapse. FlyWire/Codex commonly display only connections with syn_count >= 5; both views are recorded below. Synapse counts are summed over neuropils per (pre,post) pair.",
+    "edge_threshold_syn_count": 1,
+    "counts_per_type": {
+      "LC4": {
+        "total": 104,
+        "left": 54,
+        "right": 50
+      },
+      "LPLC2": {
+        "total": 210,
+        "left": 108,
+        "right": 102
+      },
+      "DNp01": {
+        "total": 2,
+        "left": 1,
+        "right": 1
+      }
+    },
+    "all_edges_ipsilateral": true,
+    "convergence_per_hemisphere_syn_ge_1": {
+      "LC4->DNp01_left": {
+        "n_presynaptic_neurons": 54,
+        "total_synapses": 374
+      },
+      "LC4->DNp01_right": {
+        "n_presynaptic_neurons": 50,
+        "total_synapses": 431
+      },
+      "LPLC2->DNp01_left": {
+        "n_presynaptic_neurons": 94,
+        "total_synapses": 458
+      },
+      "LPLC2->DNp01_right": {
+        "n_presynaptic_neurons": 95,
+        "total_synapses": 622
+      }
+    },
+    "convergence_per_hemisphere_syn_ge_5": {
+      "LC4->DNp01_left": {
+        "n_presynaptic_neurons": 40,
+        "total_synapses": 329
+      },
+      "LC4->DNp01_right": {
+        "n_presynaptic_neurons": 49,
+        "total_synapses": 428
+      },
+      "LPLC2->DNp01_left": {
+        "n_presynaptic_neurons": 37,
+        "total_synapses": 305
+      },
+      "LPLC2->DNp01_right": {
+        "n_presynaptic_neurons": 62,
+        "total_synapses": 539
+      }
+    },
+    "convergence_bilateral_syn_ge_1": {
+      "LC4": 805,
+      "LPLC2": 1080
+    }
+  },
+  "nodes": [
+    {
+      "id": 720575940622838154,
+      "type": "DNp01",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940632499757,
+      "type": "DNp01",
+      "hemisphere": "right",
+      "neurotransmitter": "glutamate"
+    },
+    {
+      "id": 720575940605598892,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940610522009,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940611134833,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940612518055,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940612580977,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940613256863,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940613260959,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940614572742,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940614914107,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940615053580,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940615127227,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940615462587,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940615575007,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940616713355,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940617026260,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940617176321,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940617266722,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940618002644,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940618312606,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940618676440,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940618723749,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940618807105,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940619397542,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940620795728,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940620903551,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940622108001,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940622531767,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940622939836,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940624017251,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940624111763,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940625038090,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940625934973,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940625991043,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940626605200,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940626626895,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940626916936,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940627519107,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628064260,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628081541,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628454522,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628462340,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628699560,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940629753807,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940630484495,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940630851036,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940630998339,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940631338271,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940632769180,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940633580384,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940634517856,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940638456227,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940638496720,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940640612480,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940649229433,
+      "type": "LC4",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940603637438,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940612093351,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940612323025,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940612380723,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940612498129,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940612968421,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940613609484,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940613638041,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940614582946,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940615232217,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940616066705,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940617348379,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940618234704,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940618234715,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940618266459,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940618267227,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940618275520,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940618709158,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940620314221,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940620314612,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940620731380,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940621145821,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940621522458,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940621753579,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940622330582,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940624790781,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940624856762,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940625841351,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940625845447,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940625906702,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940625932421,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940626553596,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628419527,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628518400,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628599895,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628606713,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628891863,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940629964591,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940630154660,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940631032657,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940632475449,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940632715234,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940633013355,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940633218863,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940635835967,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940636957006,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940639817947,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940641213824,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940645821316,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940652611745,
+      "type": "LC4",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940603989420,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940606126438,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940607845250,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940607854531,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940608088259,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940608875531,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940610226645,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940611567638,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940611821334,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940612096462,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940612560680,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940612766691,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940612874536,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940613145258,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940613219474,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940613470947,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940613763759,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940614631079,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940614738444,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940615055989,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940615332502,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940615907723,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940615953302,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940616008854,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940616083345,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940616377817,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940617289782,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940617294219,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940617480094,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940617997241,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940618608177,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940618927892,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940619197318,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940619263937,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940619750822,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940619900993,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940619981494,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940620139678,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940620306904,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940621914904,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940622009284,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940622156799,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940622312072,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940622425271,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940622680088,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940623262461,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940623551684,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940623652083,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940623827348,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940623925774,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940624208824,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940624359093,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940624417584,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940624531652,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940624755504,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940625216202,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940625477721,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940625695269,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940625697772,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940625700739,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940626236041,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940626375172,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940626384200,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940626414279,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940626617084,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940627368254,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940627685765,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940627902078,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628395797,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628552247,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628847164,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628921303,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628976956,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940629292785,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940629368015,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940630209603,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940630731847,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940630831185,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940631380695,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940632009167,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940632080146,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940632129848,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940632777124,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940632779932,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940634700980,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940635004271,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940635234478,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940635307639,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940635516084,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940636295019,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940636529520,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940638626118,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940638835288,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940639109795,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940639878352,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940639884878,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940639895003,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940640302389,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940641552347,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940641704656,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940642414837,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940643740964,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940645328436,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940645407268,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940647369507,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940648418425,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940653666465,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940655750305,
+      "type": "LPLC2",
+      "hemisphere": "left",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940605825666,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940606217138,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940606855554,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940607683011,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940609592674,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940610116757,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940610536290,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940610681829,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940610953651,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940611352234,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940611740569,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940612045352,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940612254701,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940612462307,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940612944382,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940612994929,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940613804906,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940613821290,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940614067167,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940614373279,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940614526974,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940615116731,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940615288203,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940615920453,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940615967377,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940616116697,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940616166685,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940616491993,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940616735489,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940618172509,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940618307046,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940618450496,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940618538641,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940618711535,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940619627934,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940619654149,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940620001718,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940620575476,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940620783180,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940620887834,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940621634913,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940622174463,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940622769159,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940622992205,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940623047629,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940623333770,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940623769783,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940624014524,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940624016778,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940624244922,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940624611002,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940624903064,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940624919077,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940624931530,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940625001735,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940625835278,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940626161930,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940626447848,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940626735016,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940626745392,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940626873000,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940627553923,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940627902979,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628039034,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628197892,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628603842,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628778058,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628849668,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940628990214,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940629384271,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940629967703,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940630650936,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940630719831,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940631095158,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940631312428,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940631397549,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940631582751,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940631742405,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940632512226,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940632711052,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940633552685,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940633588320,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940634146967,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940635040357,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940635572592,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940636539102,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940636878682,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940636950505,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940636999401,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940637088602,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940637702222,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940637958709,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940638857048,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940638922624,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940639177449,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940640510427,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940642397128,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940645180196,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940645699124,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940647358243,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940653742753,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "id": 720575940661316993,
+      "type": "LPLC2",
+      "hemisphere": "right",
+      "neurotransmitter": "acetylcholine"
+    }
+  ],
+  "edges": [
+    {
+      "pre_id": 720575940614572742,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 14,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940633580384,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 14,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940626626895,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 13,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628699560,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 13,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940612518055,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 12,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940615575007,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 12,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940622108001,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 12,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940625934973,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 11,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940618676440,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 10,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940626916936,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 10,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940605598892,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940611134833,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940617176321,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940620903551,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940626605200,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940638496720,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940617026260,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940618002644,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940625991043,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628462340,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940613260959,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940617266722,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940618723749,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940624111763,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940625038090,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940627519107,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628454522,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940629753807,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940631338271,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940614914107,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940615462587,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940616713355,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940634517856,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940612580977,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940618807105,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940622531767,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628064260,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628081541,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940632769180,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940640612480,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940610522009,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940615127227,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940620795728,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940622939836,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940630484495,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940649229433,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940613256863,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940618312606,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940624017251,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940630851036,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940630998339,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940638456227,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940615053580,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940619397542,
+      "post_id": 720575940622838154,
+      "pre_type": "LC4",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 1,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940614582946,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 16,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940639817947,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 16,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940625906702,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 15,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940631032657,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 14,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940618709158,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 13,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940612968421,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 12,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940620314612,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 12,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940625932421,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 12,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628518400,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 12,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940615232217,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 11,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940618266459,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 10,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940625845447,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 10,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940632475449,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 10,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940633013355,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 10,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940641213824,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 10,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940612380723,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940612498129,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940617348379,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940618234715,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940620314221,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940620731380,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628606713,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940632715234,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940603637438,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940612323025,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940624856762,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628599895,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940629964591,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940635835967,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940645821316,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940612093351,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940618234704,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940621145821,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940622330582,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628891863,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940633218863,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940613609484,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940616066705,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940618275520,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940621753579,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940624790781,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940625841351,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940626553596,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940630154660,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940636957006,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940652611745,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940613638041,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940618267227,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628419527,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940621522458,
+      "post_id": 720575940632499757,
+      "pre_type": "LC4",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940618608177,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 15,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940629292785,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 15,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940632080146,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 14,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940613470947,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 12,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940614738444,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 12,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940607845250,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 11,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940617289782,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 11,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940622156799,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 11,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940625216202,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 11,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940625695269,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 11,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940615907723,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940623827348,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940624755504,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940655750305,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940619750822,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940622680088,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940623551684,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940631380695,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940635307639,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940641704656,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940645328436,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940612766691,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940612874536,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940625700739,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940630831185,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940648418425,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940612560680,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940613763759,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940617294219,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940624359093,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940627902078,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628976956,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940634700980,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940635234478,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940635516084,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940639895003,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940641552347,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940607854531,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940611567638,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940613145258,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940615332502,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940615953302,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940616377817,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940617997241,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940619197318,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940624208824,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940624417584,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940625697772,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940626375172,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940636529520,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940653666465,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940603989420,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940606126438,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940610226645,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940612096462,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940614631079,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940615055989,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940616083345,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940617480094,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940619900993,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940620306904,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940621914904,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940625477721,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940626414279,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628921303,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940630209603,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940632777124,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940636295019,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940638626118,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940640302389,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940608088259,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940613219474,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940618927892,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940619263937,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940622009284,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940622312072,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940622425271,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940623262461,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940623652083,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940623925774,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628395797,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940639109795,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940639878352,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940639884878,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940642414837,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940645407268,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940608875531,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 1,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940619981494,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 1,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940624531652,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 1,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940627368254,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 1,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940627685765,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 1,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940632009167,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 1,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940635004271,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 1,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940643740964,
+      "post_id": 720575940622838154,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "left",
+      "post_hemisphere": "left",
+      "synapse_count": 1,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940647358243,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 16,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940612462307,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 15,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940614526974,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 15,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940631095158,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 14,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940634146967,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 14,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940639177449,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 13,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940623333770,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 12,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940624903064,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 12,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940626447848,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 12,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940627902979,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 12,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940631742405,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 12,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940610953651,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 11,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940620001718,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 11,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628990214,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 11,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940631397549,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 11,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940633552685,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 11,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940607683011,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 10,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940615967377,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 10,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940620887834,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 10,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940629384271,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 10,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940636950505,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 10,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940612944382,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940613804906,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940619654149,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940622769159,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628039034,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 9,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940616166685,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940618172509,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940618307046,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940619627934,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940620783180,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940621634913,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940631582751,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940635572592,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940636999401,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940638857048,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940638922624,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 8,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940606217138,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940610536290,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940611352234,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940614373279,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628603842,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628849668,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940629967703,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940631312428,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940635040357,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940636878682,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940645180196,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 7,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940606855554,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940611740569,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940615116731,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940623047629,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940624244922,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940626873000,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940630650936,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 6,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940614067167,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628197892,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940632711052,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940636539102,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940637088602,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940653742753,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940661316993,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 5,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940610681829,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940612994929,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940613821290,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940618450496,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940624611002,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940625001735,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940625835278,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940627553923,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940628778058,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940630719831,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 4,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940615920453,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940616116697,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940618538641,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940620575476,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940622174463,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940633588320,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 3,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940615288203,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940616735489,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940618711535,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940623769783,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940626745392,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940632512226,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940637702222,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940637958709,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 2,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940605825666,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 1,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940612254701,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 1,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940616491993,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 1,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940622992205,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 1,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940624014524,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 1,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940624919077,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 1,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940626161930,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 1,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940640510427,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 1,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    },
+    {
+      "pre_id": 720575940645699124,
+      "post_id": 720575940632499757,
+      "pre_type": "LPLC2",
+      "pre_hemisphere": "right",
+      "post_hemisphere": "right",
+      "synapse_count": 1,
+      "sign": "excitatory",
+      "neurotransmitter": "acetylcholine"
+    }
+  ]
+}

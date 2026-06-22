@@ -14,6 +14,7 @@ __pycache__/
 # Project artifacts
 checkpoints/
 outputs/
+scratch/
 
 # OS
 .DS_Store
