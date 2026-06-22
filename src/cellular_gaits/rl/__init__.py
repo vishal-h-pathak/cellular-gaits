@@ -13,19 +13,20 @@ Layers
   action->actuator map, reward fn, domain-randomization sampler).
 - :mod:`cellular_gaits.rl.nav_env` — ``NavRLEnv`` / ``NavRLConfig``: the
   obstacle-navigation task built on top of ``EmbodiedRLEnv``.
-
-The policy (``NCAPolicy``) and the PPO loop are *separate* modules (sessions
-1b / 1c); this package is the env layer only and knows nothing about them.
+- :mod:`cellular_gaits.rl.policies` — ``NCAPolicy``: the NCA as a
+  state-threaded Gaussian PPO policy.
 """
 
 from __future__ import annotations
 
 from .env_base import EmbodiedRLEnv
 from .nav_env import NavRLConfig, NavRLEnv, make_nav_env
+from .policies import NCAPolicy
 
 __all__ = [
     "EmbodiedRLEnv",
     "NavRLConfig",
     "NavRLEnv",
     "make_nav_env",
+    "NCAPolicy",
 ]
