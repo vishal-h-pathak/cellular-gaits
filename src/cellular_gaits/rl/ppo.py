@@ -19,16 +19,34 @@ What is NOT here (stays task-specific, by design):
     — supplied via ``make_env``,
   - the policy (architecture, warm-start) — supplied as ``agent``.
 
-Agent contract (the cleanrl interface — exactly two methods, nothing more):
-  - ``get_action_and_value(obs, action=None) -> (action, logprob, entropy, value)``
-    samples when ``action is None``, else scores the given ``action``. ``value`` is
-    shape ``(B,)`` or ``(B, 1)``.
-  - ``mean_action(obs) -> action`` — deterministic action (eval / A/B).
+Agent contract (the cleanrl interface + opaque recurrent state — exactly three methods):
+  - ``initial_state(batch_size, device) -> state`` — the per-env reset state, batched
+    ``(batch_size, *state_shape)``. Opaque to the loop; non-recurrent agents return a
+    dummy placeholder (e.g. zeros ``(batch_size, 1)``). The loop reads ``state_shape``
+    from this; it never inspects the contents.
+  - ``get_action_and_value(obs, state, action=None) -> (action, logprob, entropy, value,
+    next_state)`` — samples when ``action is None``, else scores the given ``action``.
+    ``value`` is shape ``(B,)`` or ``(B, 1)``; ``next_state`` is the advanced state.
+  - ``mean_action(obs, state) -> (action, next_state)`` — deterministic (eval / A/B).
 
-The GAE bootstrap value is taken from ``get_action_and_value(obs)`` (action discarded)
-— this loop deliberately does **not** depend on a separate ``get_value`` method, so the
-policy session does not need to implement one. (If a value-only forward pass is ever
-wanted for speed, it must be added across the policy + integrate sessions together.)
+**Why state threading (the recurrent policy fix).** The NCA policy is recurrent — it
+carries a CA grid across control steps. At update time PPO re-evaluates *shuffled*
+minibatches, so the recomputed logprob/value must condition on the **same** state the
+action was taken under, or the importance ratio is wrong. The loop therefore stores the
+realized per-step **input** state in a ``states`` buffer and feeds it back during the
+update. Because the stored state is the realized input and the NCA transition is
+deterministic, each transition is self-contained: minibatches can still be shuffled
+freely with **no sequence chunking / no truncated-BPTT**. The stored state is treated as
+a **detached input** (the returned ``next_state`` is ignored during the update). This is a
+**myopic stored-state policy gradient** (no BPTT through the CA) — correct for the ratio,
+upgradeable later to BPTT-over-chunks if needed. Non-recurrent agents (dummy state) are
+unaffected.
+
+The GAE bootstrap value is taken from ``get_action_and_value(obs, state)`` (action
+discarded), using the carried state — this loop deliberately does **not** depend on a
+separate ``get_value`` method, so the policy session does not need to implement one. (If a
+value-only forward pass is ever wanted for speed, it must be added across the policy +
+integrate sessions together.)
 """
 
 from __future__ import annotations
@@ -248,6 +266,14 @@ def train(
     obs_shape = envs.single_observation_space.shape
     act_shape = envs.single_action_space.shape
 
+    # --- opaque recurrent state: shape/dtype read from the agent (never inspected) ---
+    # `init_state` is the reset template (kept, never advanced); the running `state`
+    # below is a separate fresh batch we thread through the rollout.
+    init_state = agent.initial_state(cfg.n_envs, device)
+    state_shape = tuple(init_state.shape[1:])
+    state_dtype = init_state.dtype
+    print(f"[ppo] recurrent state_shape={state_shape} dtype={state_dtype}")
+
     # --- rollout storage ---
     obs = torch.zeros((cfg.n_steps, cfg.n_envs, *obs_shape), device=device)
     actions = torch.zeros((cfg.n_steps, cfg.n_envs, *act_shape), device=device)
@@ -255,6 +281,7 @@ def train(
     rewards = torch.zeros((cfg.n_steps, cfg.n_envs), device=device)
     dones = torch.zeros((cfg.n_steps, cfg.n_envs), device=device)
     values = torch.zeros((cfg.n_steps, cfg.n_envs), device=device)
+    states = torch.zeros((cfg.n_steps, cfg.n_envs, *state_shape), dtype=state_dtype, device=device)
 
     global_step = 0
     start_update = 1
@@ -270,6 +297,9 @@ def train(
     next_obs_np, _ = envs.reset(seed=cfg.seed)
     next_obs = torch.as_tensor(np.asarray(next_obs_np), dtype=torch.float32, device=device)
     next_done = torch.zeros(cfg.n_envs, device=device)
+    state = agent.initial_state(cfg.n_envs, device)  # running recurrent state
+    # broadcast shape for masking done envs in the (n_envs, *state_shape) state tensor
+    done_view = (cfg.n_envs,) + (1,) * len(state_shape)
 
     # rolling episode-stat trackers (RecordEpisodeStatistics-compatible info parsing)
     recent_returns: list[float] = []
@@ -286,9 +316,12 @@ def train(
             global_step += cfg.n_envs
             obs[step] = next_obs
             dones[step] = next_done
+            states[step] = state  # store the INPUT state this action was taken under
 
             with torch.no_grad():
-                action, logprob, _entropy, value = agent.get_action_and_value(next_obs)
+                action, logprob, _entropy, value, next_state = agent.get_action_and_value(
+                    next_obs, state
+                )
             values[step] = value.flatten()
             actions[step] = action
             logprobs[step] = logprob
@@ -300,13 +333,18 @@ def train(
             next_obs = torch.as_tensor(np.asarray(next_obs_np), dtype=torch.float32, device=device)
             next_done = torch.as_tensor(next_done_np.astype(np.float32), device=device)
 
+            # Advance the recurrent state, then reset rows for finished envs so the next
+            # episode starts fresh — mirrors AsyncVectorEnv's autoreset of next_obs.
+            done_mask = next_done.bool().view(done_view)
+            state = torch.where(done_mask, init_state, next_state)
+
             _collect_episode_stats(infos, recent_returns, recent_lengths)
 
         # ---------------- GAE(λ) ----------------
         # bootstrap value: get_action_and_value(obs) and discard the sampled action
         # (deliberately no get_value dependency — see module docstring).
         with torch.no_grad():
-            _a, _lp, _e, next_value = agent.get_action_and_value(next_obs)
+            _a, _lp, _e, next_value, _ns = agent.get_action_and_value(next_obs, state)
             next_value = next_value.reshape(1, -1)
             advantages = torch.zeros_like(rewards, device=device)
             lastgaelam = 0.0
@@ -324,6 +362,7 @@ def train(
 
         # ---------------- flatten the batch ----------------
         b_obs = obs.reshape((-1, *obs_shape))
+        b_states = states.reshape((-1, *state_shape))  # realized per-step input states
         b_logprobs = logprobs.reshape(-1)
         b_actions = actions.reshape((-1, *act_shape))
         b_advantages = advantages.reshape(-1)
@@ -340,8 +379,9 @@ def train(
                 end = start + cfg.minibatch_size
                 mb_inds = b_inds[start:end]
 
-                _, newlogprob, entropy, newvalue = agent.get_action_and_value(
-                    b_obs[mb_inds], b_actions[mb_inds]
+                # feed the realized per-step input state (detached); ignore next_state.
+                _, newlogprob, entropy, newvalue, _ns = agent.get_action_and_value(
+                    b_obs[mb_inds], b_states[mb_inds], b_actions[mb_inds]
                 )
                 logratio = newlogprob - b_logprobs[mb_inds]
                 ratio = logratio.exp()

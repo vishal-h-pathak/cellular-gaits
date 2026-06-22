@@ -35,10 +35,14 @@ class MLPStubAgent(nn.Module):
     """A tiny continuous-control Gaussian-policy + value MLP.
 
     Implements the Agent contract VERBATIM — the loop depends on nothing else:
-      - get_action_and_value(obs, action=None) -> (action, logprob, entropy, value)
-      - mean_action(obs) -> action
-    The value bootstrap in the loop comes from get_action_and_value(obs) (action
-    discarded), so there is intentionally no get_value method here.
+      - initial_state(batch_size, device) -> state   (DUMMY: zeros (B,1) — non-recurrent)
+      - get_action_and_value(obs, state, action=None) -> (action, logprob, entropy,
+                                                          value, next_state)
+      - mean_action(obs, state) -> (action, next_state)
+    This stub is non-recurrent, so the state is an inert placeholder threaded through
+    unchanged — which is exactly the proof that the loop's state threading is correct
+    for the trivial case. The value bootstrap comes from get_action_and_value(obs, state)
+    (action discarded), so there is intentionally no get_value method here.
     """
 
     def __init__(self, obs_dim: int, act_dim: int):
@@ -60,17 +64,22 @@ class MLPStubAgent(nn.Module):
         logstd = self.actor_logstd.expand_as(mean)
         return Normal(mean, logstd.exp())
 
-    def get_action_and_value(self, obs: torch.Tensor, action: torch.Tensor | None = None):
+    def initial_state(self, batch_size: int, device) -> torch.Tensor:
+        # dummy placeholder state — non-recurrent agent.
+        return torch.zeros((batch_size, 1), device=device)
+
+    def get_action_and_value(self, obs: torch.Tensor, state: torch.Tensor,
+                             action: torch.Tensor | None = None):
         dist = self._dist(obs)
         if action is None:
             action = dist.sample()
         logprob = dist.log_prob(action).sum(1)
         entropy = dist.entropy().sum(1)
         value = self.critic(obs)
-        return action, logprob, entropy, value
+        return action, logprob, entropy, value, state  # state threaded through unchanged
 
-    def mean_action(self, obs: torch.Tensor) -> torch.Tensor:
-        return self.actor_mean(obs)
+    def mean_action(self, obs: torch.Tensor, state: torch.Tensor):
+        return self.actor_mean(obs), state
 
 
 def make_env() -> gym.Env:
@@ -99,11 +108,13 @@ def eval_fn(agent: nn.Module) -> dict:
     with torch.no_grad():
         for ep in range(5):
             obs, _ = env.reset(seed=10_000 + ep)
+            state = agent.initial_state(1, device)  # carry recurrent state across the episode
             done = False
             total = 0.0
             while not done:
                 obs_t = torch.as_tensor(obs, dtype=torch.float32, device=device).unsqueeze(0)
-                act = agent.mean_action(obs_t).squeeze(0).cpu().numpy()
+                act_t, state = agent.mean_action(obs_t, state)
+                act = act_t.squeeze(0).cpu().numpy()
                 obs, r, term, trunc, _ = env.step(np.clip(act, -2.0, 2.0))
                 total += float(r)
                 done = term or trunc
