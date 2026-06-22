@@ -15,6 +15,7 @@ Layers
   obstacle-navigation task built on top of ``EmbodiedRLEnv``.
 - :mod:`cellular_gaits.rl.policies` — ``NCAPolicy``: the NCA as a
   state-threaded Gaussian PPO policy.
+- :mod:`cellular_gaits.rl.ppo` — ``PPOConfig`` / ``train``: the PPO loop.
 """
 
 from __future__ import annotations
@@ -22,6 +23,7 @@ from __future__ import annotations
 from .env_base import EmbodiedRLEnv
 from .nav_env import NavRLConfig, NavRLEnv, make_nav_env
 from .policies import NCAPolicy
+from .ppo import PPOConfig, train
 
 __all__ = [
     "EmbodiedRLEnv",
@@ -29,4 +31,6 @@ __all__ = [
     "NavRLEnv",
     "make_nav_env",
     "NCAPolicy",
+    "PPOConfig",
+    "train",
 ]

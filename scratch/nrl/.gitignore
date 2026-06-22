@@ -1,0 +1,3 @@
+# Heavy RL artifacts stay local (per CLAUDE.md / AGENT_SAFETY) — never git.
+ckpt/
+*.pt
