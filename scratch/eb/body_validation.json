@@ -1,0 +1,55 @@
+{
+  "controller": {
+    "run_id": "xa-full",
+    "n_params": 1236,
+    "loom_input_gain": 8.0
+  },
+  "protocol": {
+    "n_warm": 120,
+    "n_react": 120,
+    "early_steps": 15,
+    "peak_drive": 0.2,
+    "control_dt_s": 0.004
+  },
+  "conditions": {
+    "baseline": {
+      "turn_early_deg": 7.403131094846685,
+      "turn_react_deg": 115.81044411860053,
+      "disp_react": 12.715538716292501,
+      "min_thorax_z": 0.653756974674375,
+      "final_thorax_z": 1.2920962366930488
+    },
+    "left": {
+      "turn_early_deg": -26.68298656776787,
+      "turn_react_deg": -55.82736307274249,
+      "disp_react": 9.810810638251905,
+      "min_thorax_z": 0.6970470021381854,
+      "final_thorax_z": 0.8237301746541009
+    },
+    "right": {
+      "turn_early_deg": 12.568387215931082,
+      "turn_react_deg": 134.49282937466523,
+      "disp_react": 17.73335687612838,
+      "min_thorax_z": 0.6516630053833486,
+      "final_thorax_z": 0.7564810227756855
+    },
+    "front": {
+      "turn_early_deg": -15.56744750670616,
+      "turn_react_deg": -90.2046186507961,
+      "disp_react": 11.366374055732997,
+      "min_thorax_z": 0.535985524592565,
+      "final_thorax_z": 1.017016365380993
+    }
+  },
+  "checks": {
+    "directed": true,
+    "xa_polarity": true,
+    "stable": true,
+    "flees": true,
+    "reproducible": true
+  },
+  "loom_induced_early_turn_deg": {
+    "left": -34.086117662614555,
+    "right": 5.165256121084397
+  }
+}
