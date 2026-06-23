@@ -14,6 +14,7 @@ __pycache__/
 # Project artifacts
 checkpoints/
 outputs/
+scratch/
 
 # EB brain — heavy vendored connectome data (reproducibly downloadable via fetch_data.sh).
 # The ~97 MB v783 parquet and any generated weight pickles stay local; the 3.2 MB CSV is committed.
