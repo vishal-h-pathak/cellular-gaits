@@ -5,13 +5,35 @@
 > No `rm -rf` of anything you didn't create; scratch in `scratch/eb/`. `ops/` off-limits. **Commit on
 > your branch before finishing** (don't merge). Unsure → leave it + note it. (`AGENT_SAFETY.md`)
 
-> **Runs on the MAC** (brain laptop-runnable + MuJoCo — **no sentry**). On branch `feat/eb-coupling`,
-> **AFTER EB-0A + EB-0B + EB-0C are merged**. Use a todo list. **Read first:**
+> **Runs on the MAC** (brain laptop-runnable + MuJoCo — **no sentry**). On branch `feat/n-rl-navigation`
+> (brain + body + neurons + CX-1 are all merged here). Use a todo list. **Read first:**
 > `../portfolio/docs/cellular-gaits/EMBODIED_BRAIN_PLAN.md` (esp. the **design-decision log**) and the
-> three component reports (`scratch/eb/brain_explainer.md`, `neurons_report.md`, `body_explainer.md`).
-> **Understanding-first + the crux:** this is where the real design decisions live. Implement sensible
-> defaults, but **surface the interface choices for Vishal to decide** — do NOT silently bake in
-> arbitrary constants.
+> three component notes (now tracked): `docs/embodied/brain_explainer.md`, `docs/embodied/body_explainer.md`,
+> `docs/embodied/neurons_report.md`. **Understanding-first + the crux:** this is where the real design
+> decisions live. Implement sensible defaults, but **surface the interface choices for Vishal to decide**
+> — do NOT silently bake in arbitrary constants.
+
+## Carried findings from EB-0A/0B/0C — APPLY THESE (some are hard requirements, not suggestions)
+1. **BUILD THE BRAIN ONCE, THEN `step()` — never rebuild per window.** EB-0B measured network
+   construction from the ~100 MB connectivity table at **~7 min/build**; a loop that rebuilds each
+   window is dead on arrival. Build once (`BrainModel.load`), advance with `brain.step(0.015)` (the
+   network is persistent — voltages carry across calls), and make the looming **input rate
+   runtime-settable** (swap the fixed `PoissonInput` for a `PoissonGroup`/`TimedArray` rate source) so
+   intensity changes per window with **no rebuild**. **Verify a single step is milliseconds, not
+   minutes, before running the full loop** — if it isn't, STOP and report; the loop is infeasible until
+   this is solved.
+2. **Brain step = EB-0B's helper.** Use `looming_to_giant_fiber(brain, lc4_hz, lplc2_hz) -> dnp01_rate`
+   (`brain/neurons.py`); take **direction from the L vs R LC4/LPLC2 activation bias**.
+3. **Body = EB-0C's primitive.** Use `apply_escape(env, drive, direction)`; keep one `EscapeMotor`
+   across windows (carry its CA state). The motor map should target the **moderate** drive range
+   (`CALIBRATED_DRIVE ≈ 0.2`), **not** linear-to-1 — "more DNp01 ≠ spin harder" (a held/saturated drive
+   tumbles the body). Escape is a **transient**: pulse the drive as the loom rises/falls, don't hold DC.
+   Expect a **left/right asymmetry** (stronger left turn, inherited from X-A) — report it, don't assume symmetry.
+4. **HONESTY (carry it into the demo + report).** EB-0B found the **isolated GF saturates** (we drive all
+   314 VPNs with no whole-brain inhibition/normalization). So this loop faithfully *wires the
+   LC4/LPLC2→DNp01→escape pathway*, but do **NOT** claim a calibrated escape threshold or in-vivo
+   selectivity — that lives in the whole-brain context this stack doesn't yet capture. The honest claim
+   is "the real connectome routes a looming cue to an embodied escape," with that caveat stated plainly.
 
 ## Context
 This is **Eon's four-part loop in miniature, on the real connectome** — and one step beyond Eon's public
@@ -43,5 +65,5 @@ mappings (or adjust) and we'll tune / move to Phase 2."* **Do not** auto-tune fu
 ## Definition of done
 - `src/cellular_gaits/embodied/escape_loop.py` — the closed loop: looming → real connectome → body escape.
 - The three mappings exposed as knobs + surfaced as decisions in the report.
-- `scratch/eb/escape_loop_report.md` written; component reports referenced.
-- **Committed on `feat/eb-coupling`** (not merged). STOP for the interface-mapping review.
+- `scratch/eb/escape_loop_report.md` written (+ a tracked copy at `docs/embodied/`); component notes referenced.
+- **Committed on `feat/n-rl-navigation`.** STOP for the interface-mapping review.
