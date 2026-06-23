@@ -15,6 +15,15 @@ __pycache__/
 checkpoints/
 outputs/
 
+# EB brain — heavy vendored connectome data (reproducibly downloadable via fetch_data.sh).
+# The ~97 MB v783 parquet and any generated weight pickles stay local; the 3.2 MB CSV is committed.
+src/cellular_gaits/brain/_shiu/data/*.parquet
+src/cellular_gaits/brain/_shiu/data/*.pickle
+src/cellular_gaits/brain/_shiu/data/*.pkl
+# Brain simulation outputs (spike parquets etc.)
+src/cellular_gaits/brain/_shiu/results/
+scratch/eb/Drosophila_brain_model/
+
 # OS
 .DS_Store
 

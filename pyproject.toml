@@ -13,6 +13,10 @@ dependencies = [
     "matplotlib>=3.8,<4.0",
     "imageio>=2.34,<3.0",
     "imageio-ffmpeg>=0.5,<1.0",
+    "brian2>=2.10.1",
+    "pandas>=3.0.3",
+    "pyarrow>=24.0.0",
+    "joblib>=1.5.3",
 ]
 
 [build-system]
