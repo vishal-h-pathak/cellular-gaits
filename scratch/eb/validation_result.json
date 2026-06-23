@@ -7,23 +7,19 @@
   "t_run_s": 1.0,
   "n_trials": 3,
   "mn9_control_hz": 0.0,
-  "mn9_activated_mean_hz": 79.66666666666667,
-  "mn9_activated_std_hz": 3.2998316455372216,
+  "mn9_activated_mean_hz": 80.0,
+  "mn9_activated_std_hz": 3.7416573867739413,
   "mn9_trials_hz": [
-    79.0,
+    85.0,
     76.0,
-    84.0
+    79.0
   ],
   "n_neurons_active_control": 0,
-  "n_neurons_active_activated": 381,
+  "n_neurons_active_activated": 366,
   "top_downstream": [
     {
       "flywire_id": 720575940622695448,
-      "rate_hz": 136.0
-    },
-    {
-      "flywire_id": 720575940627383685,
-      "rate_hz": 123.0
+      "rate_hz": 134.0
     },
     {
       "flywire_id": 720575940629888530,
@@ -31,31 +27,35 @@
     },
     {
       "flywire_id": 720575940618165019,
-      "rate_hz": 110.0
+      "rate_hz": 122.0
+    },
+    {
+      "flywire_id": 720575940627383685,
+      "rate_hz": 121.0
     },
     {
       "flywire_id": 720575940630868793,
+      "rate_hz": 117.0
+    },
+    {
+      "flywire_id": 720575940629778554,
       "rate_hz": 109.0
     },
     {
       "flywire_id": 720575940619973712,
-      "rate_hz": 108.0
+      "rate_hz": 107.0
     },
     {
       "flywire_id": 720575940640589171,
       "rate_hz": 106.0
     },
     {
-      "flywire_id": 720575940629778554,
-      "rate_hz": 101.0
-    },
-    {
       "flywire_id": 720575940626191306,
       "rate_hz": 101.0
     },
     {
-      "flywire_id": 720575940632648612,
-      "rate_hz": 95.0
+      "flywire_id": 720575940638103349,
+      "rate_hz": 97.0
     }
   ]
 }
